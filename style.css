@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* styles.css */
+@layer utilities {
+  .mediumFont {
+    @apply text-mediumFont !important; /* Ensure the style is enforced */
+  }
+}

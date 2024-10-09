@@ -1,0 +1,2 @@
+side padding whole section:2rem (px-8)
+inner padding : 4rem (px-16)
