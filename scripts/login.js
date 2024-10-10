@@ -26,7 +26,10 @@ function sendOtp() {
 
     let mobNumber = document.querySelector('#mobNumber');
     let otpInputContainer = document.querySelector('#otpInputContainer');
-    let countryCode = document.querySelector('.countryCodeContainer').getAttribute('dataval')
+    let countryCode = getSelectedDropdownItemElement('contryCodeMain').getAttribute('mob-code')
+
+    
+
     console.log(mobNumber.value)
     // Check if the mobile number value exists and is a valid number
     if (mobNumber.value === "" || !/^\d+$/.test(mobNumber.value)) {

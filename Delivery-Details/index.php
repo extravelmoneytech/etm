@@ -74,7 +74,7 @@
                 </div>
 
             </div>
-            <section class="md:flex px-5 sm:px-12 md:px-24 py-5 gap-6 md:mt-16">
+            <section class="pb-32 md:pb-8 px-5 sm:px-12 md:px-16 py-5 md:flex  gap-6 md:mt-16">
                 <div class="w-full md:w-3/5 border-[#0e51a0]/10 rounded-2xl md:border md:px-8 md:pb-4">
                     <div
                         class=" w-full p-2.5 bg-primary-blue/10 rounded-lg justify-center items-center gap-2.5 inline-flex md:hidden">
@@ -306,7 +306,8 @@
                         </div>
 
 
-                        <div class="w-full h-12 px-2 py-3 bg-primary-blue rounded-lg justify-center items-center gap-1 inline-flex mt-20 mb-4"
+                        <div class="bg-white py-4 rounded-t-3xl  md:static fixed  left-1/2  transform -translate-x-1/2   md:translate-x-0 md:translate-y-0 bottom-0 w-full flex items-center justify-center">
+                        <div class=" h-12 px-2 py-3 bg-primary-blue rounded-lg justify-center items-center gap-1 inline-flex mt-4 md:mt-20 mb-0 md:mb-4   z-10 w-[90%] md:w-full"
                             id="deliveryUpdateBtn">
                             <div class="text-white text-sm font-bold">Proceed to Next</div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -316,6 +317,8 @@
                                     fill="white" />
                             </svg>
                         </div>
+                        </div>
+                        
                     </div>
 
                 </div>

@@ -28,7 +28,7 @@
                         <div id=""
                     class="p-[2px] rounded-[12px]  customGradient justify-start items-center gap-2.5 inline-flex w-[35%]">
                     <div style="padding: 0.75rem 0.5rem;height: 3rem;" class="justify-start rounded-[10px] items-center gap-2.5 flex w-full border-0 bg-white">
-                        <div style="height: fit-content;padding: 0;border: none;width: 100%;" class="dropdownMain select-none countryCodeContainer" data-search="true" id="" dataval="oe">
+                        <div style="height: fit-content;padding: 0;border: none;width: 100%;" class="dropdownMain select-none countryCodeContainer" data-search="true" id="contryCodeMain" dataval="oe" custom-content>
 
                             <div class="selectedItem">
 
@@ -72,7 +72,7 @@
                     <div id="verifyOtpMain" class="mt-6 flex flex-col h-full ">
                         <span class="text-[#777777] text-base font-medium  leading-7">Enter OTP</span>
 
-                    <div class="otpInputBlock mt-4 gap-4 flex">
+                    <div class="otpInputBlock mt-4 gap-4 flex mb-2">
                         <input type="number" class="w-16 h-16 bg-primary-blue/10 rounded-xl outline-none border-0  text-white text-center font-semibold text-3xl">
 
                         <input type="number" class="w-16 h-16 bg-primary-blue/10 rounded-xl outline-none border-0  text-white text-center font-semibold text-3xl">
@@ -197,7 +197,7 @@
 
 
             <section class="md:mt-12">
-                <div class="px-5 sm:px-12 md:px-16 py-5 md:flex gap-5 md:gap-10 forexContainer flex-col md:flex-row">
+                <div class="pb-32 md:pb-8 px-5 sm:px-12 md:px-16 py-5 md:flex gap-5 md:gap-10 forexContainer flex-col md:flex-row ">
 
                     <div class="w-full md:w-2/3 md:border border-black/10 rounded-xl md:px-12 md:py-6">
 
@@ -238,13 +238,10 @@
                                     <p class="text-black text-base font-bold  leading-7">Product 1</p>
 
 
-                                    <div
+                                    <div id="productAdderCloseBtn"
                                         class="h-8 p-2 bg-[#fef2f1] rounded-lg border border-[#b42318]/10 justify-center items-center gap-2 inline-flex">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17"
-                                            viewBox="0 0 16 17" fill="none">
-                                            <path
-                                                d="M13.5 3.68945H10.875V3.06445C10.875 2.69978 10.7301 2.35004 10.4723 2.09218C10.2144 1.83432 9.86467 1.68945 9.5 1.68945H6.5C6.13533 1.68945 5.78559 1.83432 5.52773 2.09218C5.26987 2.35004 5.125 2.69978 5.125 3.06445V3.68945H2.5C2.40054 3.68945 2.30516 3.72896 2.23483 3.79929C2.16451 3.86961 2.125 3.965 2.125 4.06445C2.125 4.16391 2.16451 4.25929 2.23483 4.32962C2.30516 4.39994 2.40054 4.43945 2.5 4.43945H3.125V13.5645C3.125 13.7965 3.21719 14.0191 3.38128 14.1832C3.54538 14.3473 3.76794 14.4395 4 14.4395H12C12.2321 14.4395 12.4546 14.3473 12.6187 14.1832C12.7828 14.0191 12.875 13.7965 12.875 13.5645V4.43945H13.5C13.5995 4.43945 13.6948 4.39994 13.7652 4.32962C13.8355 4.25929 13.875 4.16391 13.875 4.06445C13.875 3.965 13.8355 3.86961 13.7652 3.79929C13.6948 3.72896 13.5995 3.68945 13.5 3.68945ZM5.875 3.06445C5.875 2.89869 5.94085 2.73972 6.05806 2.62251C6.17527 2.5053 6.33424 2.43945 6.5 2.43945H9.5C9.66576 2.43945 9.82473 2.5053 9.94194 2.62251C10.0592 2.73972 10.125 2.89869 10.125 3.06445V3.68945H5.875V3.06445ZM12.125 13.5645C12.125 13.5976 12.1118 13.6294 12.0884 13.6528C12.0649 13.6763 12.0332 13.6895 12 13.6895H4C3.96685 13.6895 3.93505 13.6763 3.91161 13.6528C3.88817 13.6294 3.875 13.5976 3.875 13.5645V4.43945H12.125V13.5645ZM6.875 7.06445V11.0645C6.875 11.1639 6.83549 11.2593 6.76516 11.3296C6.69484 11.3999 6.59946 11.4395 6.5 11.4395C6.40054 11.4395 6.30516 11.3999 6.23484 11.3296C6.16451 11.2593 6.125 11.1639 6.125 11.0645V7.06445C6.125 6.965 6.16451 6.86961 6.23484 6.79929C6.30516 6.72896 6.40054 6.68945 6.5 6.68945C6.59946 6.68945 6.69484 6.72896 6.76516 6.79929C6.83549 6.86961 6.875 6.965 6.875 7.06445ZM9.875 7.06445V11.0645C9.875 11.1639 9.83549 11.2593 9.76517 11.3296C9.69484 11.3999 9.59946 11.4395 9.5 11.4395C9.40054 11.4395 9.30516 11.3999 9.23483 11.3296C9.16451 11.2593 9.125 11.1639 9.125 11.0645V7.06445C9.125 6.965 9.16451 6.86961 9.23483 6.79929C9.30516 6.72896 9.40054 6.68945 9.5 6.68945C9.59946 6.68945 9.69484 6.72896 9.76517 6.79929C9.83549 6.86961 9.875 6.965 9.875 7.06445Z"
-                                                fill="#B42318" />
+                                        <svg class="" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 17" fill="none">
+                                            <path d="M12.7635 12.7349C12.8003 12.7693 12.8299 12.8107 12.8503 12.8567C12.8708 12.9027 12.8819 12.9523 12.8828 13.0027C12.8836 13.053 12.8744 13.103 12.8555 13.1497C12.8367 13.1964 12.8086 13.2388 12.773 13.2744C12.7374 13.3101 12.695 13.3381 12.6483 13.357C12.6016 13.3758 12.5515 13.3851 12.5012 13.3842C12.4508 13.3833 12.4012 13.3723 12.3552 13.3518C12.3092 13.3313 12.2678 13.3018 12.2335 13.2649L7.99846 9.03055L3.76346 13.2649C3.69237 13.3312 3.59835 13.3672 3.5012 13.3655C3.40405 13.3638 3.31135 13.3244 3.24265 13.2557C3.17394 13.187 3.13459 13.0943 3.13287 12.9972C3.13116 12.9 3.16722 12.806 3.23346 12.7349L7.46783 8.49992L3.23346 4.26492C3.16722 4.19384 3.13116 4.09981 3.13287 4.00266C3.13459 3.90551 3.17394 3.81282 3.24265 3.74411C3.31135 3.67541 3.40405 3.63605 3.5012 3.63434C3.59835 3.63262 3.69237 3.66868 3.76346 3.73492L7.99846 7.9693L12.2335 3.73492C12.3045 3.66868 12.3986 3.63262 12.4957 3.63434C12.5929 3.63605 12.6856 3.67541 12.7543 3.74411C12.823 3.81282 12.8623 3.90551 12.864 4.00266C12.8658 4.09981 12.8297 4.19384 12.7635 4.26492L8.52908 8.49992L12.7635 12.7349Z" fill="black"></path>
                                         </svg>
                                     </div>
                                 </div>
@@ -537,7 +534,8 @@
                             </div>
 
 
-                            <div class="w-full h-12 px-2 py-3 bg-primary-blue rounded-lg justify-center items-center gap-1 inline-flex mt-20 mb-4"
+                            <div class="bg-white py-4 rounded-t-3xl  md:static fixed  left-1/2  transform -translate-x-1/2   md:translate-x-0 md:translate-y-0 bottom-0 w-full flex items-center justify-center ">
+                            <div class=" h-12 px-2 py-3 bg-primary-blue rounded-lg justify-center items-center gap-1 inline-flex mt-4 md:mt-20 mb-0 md:mb-4   z-10 w-[90%] md:w-full"
                                 id="bestRatesFetchBtn">
                                 <div class="text-white text-sm font-bold">Proceed to Next</div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -547,6 +545,8 @@
                                         fill="white" />
                                 </svg>
                             </div>
+                            </div>
+                            
                         </div>
                     </div>
 
@@ -789,6 +789,8 @@
             </div>
         </div>
 
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput.min.js"></script>
         <script src="<?php echo $fold . 'scripts/header.js'; ?>"></script>
 <script src="<?php echo $fold . 'scripts/dropDown.js'; ?>"></script>
 <script src="<?php echo $fold . 'scripts/pageScripts/userCheck.js'; ?>"></script>

@@ -64,6 +64,7 @@ const kycData = async () => {
         }
 
         const resp = await response.json();
+        console.log(resp)
         console.log(resp.kyc_list)
         createKycUploaders(resp.kyc_list)
     } catch (error) {

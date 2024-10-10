@@ -76,7 +76,7 @@
             </div>
 
             <section>
-                <div class="px-5 sm:px-12 md:px-16 py-5">
+                <div class="px-5 sm:px-12 md:px-16 py-5 pb-36 customMd:pb-8">
                     <div
                         class=" w-full p-2.5 bg-primary-blue/10 rounded-lg justify-center items-center gap-2.5 inline-flex md:hidden">
                         <div class="text-primary-blue text-base font-bold" id="productNameIdentifier">Currency Exchange</div>
@@ -333,8 +333,10 @@
     
                             </div>
 
+
+                            <div class="bg-white py-4 rounded-t-3xl  md:static fixed bottom-0 left-0 w-full flex items-center justify-center">
                             <div
-                                class="w-full h-12 px-2 py-3 bg-primary-blue rounded-lg justify-center items-center gap-1 inline-flex mt-10 cursor-pointer" id="contactUpdateBtn">
+                                class="h-12 px-2 py-3 bg-primary-blue rounded-lg justify-center items-center gap-1 inline-flex customMd:mt-10 mt-4 cursor-pointer w-[90%] md:w-full" id="contactUpdateBtn">
                                 <div class="text-white text-sm font-bold">Proceed to Next</div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none">
@@ -343,6 +345,8 @@
                                         fill="white" />
                                 </svg>
                             </div>
+                            </div>
+                            
                         </div>
                         
                     </div>

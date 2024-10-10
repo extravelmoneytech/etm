@@ -39,7 +39,7 @@
                                     <div id=""
                                 class="p-[2px] rounded-[12px]  customGradient justify-start items-center gap-2.5 inline-flex w-[35%]">
                                 <div style="padding: 0.75rem 0.5rem;height: 3rem;" class="justify-start rounded-[10px] items-center gap-2.5 flex w-full border-0 bg-white">
-                                    <div style="height: fit-content;padding: 0;border: none;width: 100%;" class="dropdownMain select-none countryCodeContainer" data-search="true" id="" dataval="oe">
+                                    <div style="height: fit-content;padding: 0;border: none;width: 100%;" class="dropdownMain select-none countryCodeContainer" data-search="true" id="contryCodeMain" dataval="oe" custom-content>
 
                                         <div class="selectedItem">
 
@@ -159,13 +159,15 @@
             </div>
         </div>
 
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput.min.js"></script>
         <script src="<?php echo $fold . 'scripts/loadingAnimation.js'; ?>"></script>
 <script src="<?php echo $fold . 'scripts/login.js'; ?>"></script>
 <script src="<?php echo $fold . 'scripts/header.js'; ?>"></script>
 <script src="<?php echo $fold . 'scripts/alert.js'; ?>"></script>
-<script src="<?php echo $fold . 'scripts/otp.js'; ?>"></script>
+
 <script src="<?php echo $fold . 'scripts/dropDown.js'; ?>"></script>
+<script src="<?php echo $fold . 'scripts/otp.js'; ?>"></script>
+
 
         
     </footer>

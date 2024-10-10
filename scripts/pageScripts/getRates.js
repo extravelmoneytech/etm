@@ -9,406 +9,430 @@ const token = sessionStorage.getItem('token');
 
 
 
-if(sessionStorage.getItem('productPage')==='fx'){
+if (sessionStorage.getItem('productPage') === 'fx') {
 
 
 
     // Retrieve the stored data from sessionStorage
-const storedDataJSON = sessionStorage.getItem('storedData');
+    const storedDataJSON = sessionStorage.getItem('storedData');
 
-let productData = [];
-// Mapping of currency codes to their formal names
-const currencyNames = {
-    USD: "United States Dollar",
-    GBP: "British Pound",
-    AUD: "Australian Dollar",
-    CAD: "Canadian Dollar",
-    EUR: "Euro",
-    JPY: "Japanese Yen",
-    MYR: "Malaysian Ringgit",
-    NZD: "New Zealand Dollar",
-    SGD: "Singapore Dollar",
-    THB: "Thai Baht",
-    AED: "United Arab Emirates Dirham"
-};
+    let productData = [];
+    // Mapping of currency codes to their formal names
+    const currencyNames = {
+        USD: "United States Dollar",
+        GBP: "British Pound",
+        AUD: "Australian Dollar",
+        CAD: "Canadian Dollar",
+        EUR: "Euro",
+        JPY: "Japanese Yen",
+        MYR: "Malaysian Ringgit",
+        NZD: "New Zealand Dollar",
+        SGD: "Singapore Dollar",
+        THB: "Thai Baht",
+        AED: "United Arab Emirates Dirham"
+    };
 
-const currencySymbols = {
-    'USD': '$',
-    'GBP': '£',
-    'EUR': '€',
-    'AUD': 'A$',
-    'CAD': 'C$',
-    'THB':'฿'
-    // Add other currency mappings here as needed
-};
-let rowId;
+    const currencySymbols = {
+        'USD': '$',
+        'GBP': '£',
+        'EUR': '€',
+        'AUD': 'A$',
+        'CAD': 'C$',
+        'THB': '฿'
+        // Add other currency mappings here as needed
+    };
+    let rowId;
 
-let buyCity;
-// Check if the stored data and token exist
-if (storedDataJSON && token) {
-    loadinggg(true)
-    // Parse the JSON string back into a JavaScript object
-    const storedData = JSON.parse(storedDataJSON);
+    let buyCity;
+    // Check if the stored data and token exist
+    if (storedDataJSON && token) {
+        loadinggg(true)
+        // Parse the JSON string back into a JavaScript object
+        const storedData = JSON.parse(storedDataJSON);
 
-    console.log(storedData,'jhj')
+        console.log(storedData, 'jhj')
 
-    // Access the data from the object
-    const widgetProduct = storedData[0].widgetProduct;
-    const widgetAmount = storedData[0].widgetAmount;
-    buyCity = storedData[0].city;
-    console.log(buyCity,'buycity')
-    const currencyCode = storedData[0].widgetCurrency;
-    const recommendationText = storedData[0].recommendationText;
-    
-
-    productData[0] = {
-        productType: widgetProduct,
-        productName: currencyCode,
-        currencyValue: "",
-        totalINR: ""
-    }
-    // Format the widgetCurrency value
-    const formattedWidgetCurrency = currencyNames[currencyCode]
-        ? `${currencyNames[currencyCode]} (${currencyCode})`
-        : currencyCode; // Default to code if not found
-
-    // Update static content
-    document.querySelector('.buyProduct').textContent = widgetProduct;
-    document.querySelector('.buyCurrency').textContent = formattedWidgetCurrency;
-    document.querySelector('.buyAmount').value = widgetAmount;
-
-    // Handle recommendation text visibility
-    if (!recommendationText || recommendationText.trim() === '') {
-        document.querySelector('#recommendationTextContainer').style.display = 'none';
-    } else {
-        document.querySelector('#recommendationText').textContent = recommendationText;
-        document.querySelector('#recommendationTextContainer').style.display = 'flex';
-    }
+        // Access the data from the object
+        const widgetProduct = storedData[0].widgetProduct;
+        const widgetAmount = storedData[0].widgetAmount;
+        buyCity = storedData[0].city;
+        console.log(buyCity, 'buycity')
+        const currencyCode = storedData[0].widgetCurrency;
+        const recommendationText = storedData[0].recommendationText;
 
 
 
-    const params = new URLSearchParams({
-        action: 'get_city_rate',
-        token: token,
-        city: buyCity
-    });
+        // Format the widgetCurrency value
+        const formattedWidgetCurrency = currencyNames[currencyCode]
+            ? `${currencyNames[currencyCode]} (${currencyCode})`
+            : currencyCode; // Default to code if not found
 
-    fetch('https://mvc.extravelmoney.com/api-etm/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: params.toString(),
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data,'mbcx')
-            if(data.products){
-                addCard(data.products)
-            }
-            
+        // Update static content
+        document.querySelector('.buyProduct').textContent = widgetProduct;
+        document.querySelector('.buyCurrency').textContent = formattedWidgetCurrency;
+        document.querySelector('.buyAmount').value = widgetAmount;
 
-            loadinggg(false)
-
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            // location.href='error.html'
-        });
-
-
-} else {
-    console.log('No data found in sessionStorage.');
-}
-
-
-let nextBtn = document.querySelector('#bestRatesFetchBtn');
-
-nextBtn.addEventListener('click', () => {
-
-    if(userCheck()){
-        
-        
-        location.href='/Delivery-Details'
-        
-    }else{
-        console.log('not a user, verification required')
-        openOtpWidget()
-    }
-
-});
+        // Handle recommendation text visibility
+        if (!recommendationText || recommendationText.trim() === '') {
+            document.querySelector('#recommendationTextContainer').style.display = 'none';
+        } else {
+            document.querySelector('#recommendationText').textContent = recommendationText;
+            document.querySelector('#recommendationTextContainer').style.display = 'flex';
+        }
 
 
 
-
-
-
-let addCurrencyCardBtn = document.querySelector('#addCurrencyCardBtn');
-let addForexCardBtn = document.querySelector('#addForexCardBtn');
-let maxCards=3;
-
-let productAdder=document.querySelector('#productAdder');
-
-// Check if the item exists in sessionStorage before parsing
-const storedIbrData = sessionStorage.getItem('ibrData');
-let parsedData;
-
-if (storedIbrData !== null) {
-    // Parse and use the data if it exists
-    parsedData = JSON.parse(storedIbrData);
-    console.log(parsedData,'parsedData')
-}
-    
-addCurrencyCardBtn.addEventListener('click', () => {
-    productAdder.style.display='flex'
-    forceSelectDropdownItem('cardProduct','currency')
-    updateProdAddCard()
-    
-});
-
-addForexCardBtn.addEventListener('click', () => {
-    productAdder.style.display='flex'
-    forceSelectDropdownItem('cardProduct','forexCard')
-    updateProdAddCard()
-});
-
-
-document.querySelector('#prodCardAddBtn').addEventListener('click', async () => {
-    loadinggg(true)
-    
-    let product = document.querySelector('#cardProduct').getAttribute('dataval');
-    let currency = document.querySelector('#cardCurrency').getAttribute('dataval');
-    
-    if(product==='forexCard'){
-        product='Forex Card'
-    }
-    else if(product==='currency'){
-        product='Currency'
-    }
-    console.log(product,'pp products')
-    
-    
-
-    try {
-        const apiUrl = 'https://mvc.extravelmoney.com/api-etm/';
-        
         const params = new URLSearchParams({
-            action: 'add_remove_product',
-            token: token,  // Make sure token is defined
-            transaction: 'buy',
-            currency: currency,
-            product: product,
-            amount: '1000',
-            function: 'add'
+            action: 'get_city_rate',
+            token: token,
+            city: buyCity
         });
 
-        const response = await fetch(apiUrl, {
+        fetch('https://mvc.extravelmoney.com/api-etm/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: params.toString(),
-        });
-
-        if (!response.ok) {
-            // Throw detailed error if response is not OK
-            throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
-        }
-
-        const resp = await response.json();
-        console.log(resp, 'newresp');
-        if(resp.products){
-            addCard(resp.products)
-        }
-        
-        productAdder.style.display='none'
-        loadinggg(false)
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        // Optionally redirect to an error page
-        // location.href = 'error.html';
-    }
-});
-
-
-
-
-function addCard(data) {
-    
-    console.log(data, 'adding cards');
-    renderCartItems(data);
-    
-    let templateCard = document.getElementById('prodCardTemplate');
-    console.log(templateCard);
-
-    let container = document.querySelector('.prodCardContainer'); // Get the container
-    container.innerHTML = ''; // Clear container before appending new cards
-
-    // Loop through each item in the data array
-    data.forEach((item) => {
-        console.log(item); // Log each data item
-
-        let newCard = templateCard.cloneNode(true); // Clone the template card
-        newCard.setAttribute('rowId', item.rowID); // Set rowID
-        newCard.style.display = 'block'; // Make the cloned card visible
-
-        newCard.querySelector('.buyProduct').textContent=item.productType
-        
-
-        // Set the card note with market rate and city info
-        newCard.querySelector('#cardNote').innerHTML = `The current market rate of <span class="currencyCode">${item.currency}</span> per 1 unit is <b>${item.rate}</b> Indian rupees in <b>${buyCity}</b>`;
-
-        // Format the currency value
-        const formattedWidgetCurrency = currencyNames[item.currency]
-            ? `${currencyNames[item.currency]} (${item.currency})`
-            : item.currency; // Use currency code if name not found
-        newCard.querySelector('.buyCurrency').textContent = formattedWidgetCurrency;
-
-        // Set INR rate and input event listener
-        let inrRate = newCard.querySelector('#inrRate');
-        let input = newCard.querySelector('#currencyInput');
-
-        input.value=currencySymbols[item.currency]+" "+item.amount
-        inrRate.textContent = '₹' + formatIndianCurrency(item.totalINR);
-
-        input.addEventListener('input', () => {
-            const currentAmount = input.value.replace(/^\D+/, ''); // Remove currency symbol
-            let finalAmount = currentAmount * item.rate;
-            inrRate.textContent = '₹' + formatIndianCurrency(finalAmount);
-        
-            // Declare and immediately invoke the async function
-            (async () => {
-                try {
-                    const apiUrl = 'https://mvc.extravelmoney.com/api-etm/';
-                    const params = new URLSearchParams({
-                        action: 'save_amount',
-                        token: token,  // Ensure token is defined
-                        rowID: item.rowID,
-                        amount: currentAmount
-                    });
-        
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: params.toString(),
-                    });
-        
-                    if (!response.ok) {
-                        // Detailed error message
-                        throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
-                    }
-        
-                    const resp = await response.json();
-                    if (resp.status) {
-                        console.log(resp);  // Log the API response if successful
-                    }
-                } catch (error) {
-                    console.error('Error fetching data:', error);
-                    // Optionally, redirect to an error page
-                    // location.href = 'error.html';
-                }
-            })();  // Immediately invoke the async function
-        });
-        
-
-        console.log(data.length,'mnbv')
-        if(data.length==1){
-            newCard.querySelector('#deleteCard').style.display='none'
-        }else{
-            newCard.querySelector('#deleteCard').style.display='block'
-            // Async event listener for delete button
-        newCard.querySelector('#deleteCard').addEventListener('click', async () => {
-            loadinggg(true)
-            
-            try {
-                const apiUrl = 'https://mvc.extravelmoney.com/api-etm/';
-
-                const params = new URLSearchParams({
-                    action: 'add_remove_product',
-                    token: token,  // Ensure token is defined
-                    transaction: 'buy',
-                    function: 'remove',
-                    rowID: newCard.getAttribute('rowId')
-                });
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: params.toString(),
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data, 'mbcx')
+                if (data.products) {
+                    addCard(data.products)
+                    productData = data.products
                 }
 
-                const resp = await response.json();
-                console.log('API response:', resp);
-                
-                // Refresh the cards with the updated product list
-                addCard(resp.products);
+
                 loadinggg(false)
 
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                // Optionally, redirect or show an error message
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // location.href='error.html'
+            });
+
+
+    } else {
+        console.log('No data found in sessionStorage.');
+    }
+
+
+    let nextBtn = document.querySelector('#bestRatesFetchBtn');
+
+    nextBtn.addEventListener('click', () => {
+
+        if (userCheck()) {
+
+
+            location.href = '/Delivery-Details'
+
+        } else {
+            console.log('not a user, verification required')
+            openOtpWidget()
+        }
+
+    });
+
+
+
+
+
+
+    let addCurrencyCardBtn = document.querySelector('#addCurrencyCardBtn');
+    let addForexCardBtn = document.querySelector('#addForexCardBtn');
+    let maxCards = 3;
+
+    let productAdder = document.querySelector('#productAdder');
+
+    // Check if the item exists in sessionStorage before parsing
+    const storedIbrData = sessionStorage.getItem('ibrData');
+    let parsedData;
+
+    if (storedIbrData !== null) {
+        // Parse and use the data if it exists
+        parsedData = JSON.parse(storedIbrData);
+        console.log(parsedData, 'parsedData')
+    }
+
+    addCurrencyCardBtn.addEventListener('click', () => {
+        productAdder.style.display = 'flex'
+        forceSelectDropdownItem('cardProduct', 'currency')
+        updateProdAddCard()
+
+    });
+
+    addForexCardBtn.addEventListener('click', () => {
+        productAdder.style.display = 'flex'
+        forceSelectDropdownItem('cardProduct', 'forexCard')
+        updateProdAddCard()
+    });
+
+    let productAdderCloseBtn = document.querySelector('#productAdderCloseBtn');
+
+    productAdderCloseBtn.addEventListener('click', () => {
+        productAdder.style.display = 'none'
+    })
+
+    document.querySelector('#prodCardAddBtn').addEventListener('click', async () => {
+        loadinggg(true)
+
+        let product = document.querySelector('#cardProduct').getAttribute('dataval');
+        let currency = document.querySelector('#cardCurrency').getAttribute('dataval');
+
+        if (product === 'forexCard') {
+            product = 'Forex Card'
+        }
+        else if (product === 'currency') {
+            product = 'Currency'
+        }
+        console.log(product, 'pp products')
+
+
+
+        try {
+            const apiUrl = 'https://mvc.extravelmoney.com/api-etm/';
+
+            const params = new URLSearchParams({
+                action: 'add_remove_product',
+                token: token,  // Make sure token is defined
+                transaction: 'buy',
+                currency: currency,
+                product: product,
+                amount: '1000',
+                function: 'add'
+            });
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: params.toString(),
+            });
+
+            if (!response.ok) {
+                // Throw detailed error if response is not OK
+                throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
             }
 
-        });
-        }
-        
+            const resp = await response.json();
+            console.log(resp, 'newresp');
+            if (resp.products) {
+                addCard(resp.products)
+            }
 
-        // Append the new card to the container
-        container.append(newCard);
-        
-        if(data.length>=maxCards){
-            document.querySelector('#addBtnContainer').style.display='none'
-        }else{
-            document.querySelector('#addBtnContainer').style.display='block'
+            productAdder.style.display = 'none'
+            loadinggg(false)
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // Optionally redirect to an error page
+            // location.href = 'error.html';
         }
     });
 
-    console.log('All cards added');
+
+
+
+    function addCard(data) {
+
+        console.log(data, 'adding cards');
+        renderCartItems(data);
+
+        let templateCard = document.getElementById('prodCardTemplate');
+        console.log(templateCard);
+
+        let container = document.querySelector('.prodCardContainer'); // Get the container
+        container.innerHTML = ''; // Clear container before appending new cards
+
+        // Loop through each item in the data array
+        data.forEach((item) => {
+            console.log(item); // Log each data item
+
+            let newCard = templateCard.cloneNode(true); // Clone the template card
+            newCard.setAttribute('rowId', item.rowID); // Set rowID
+            newCard.style.display = 'block'; // Make the cloned card visible
+
+            newCard.querySelector('.buyProduct').textContent = item.productType
+
+
+            // Set the card note with market rate and city info
+            newCard.querySelector('#cardNote').innerHTML = `The current market rate of <span class="currencyCode">${item.currency}</span> per 1 unit is <b>${item.rate}</b> Indian rupees in <b>${buyCity}</b>`;
+
+            // Format the currency value
+            const formattedWidgetCurrency = currencyNames[item.currency]
+                ? `${currencyNames[item.currency]} (${item.currency})`
+                : item.currency; // Use currency code if name not found
+            newCard.querySelector('.buyCurrency').textContent = formattedWidgetCurrency;
+
+            // Set INR rate and input event listener
+            let inrRate = newCard.querySelector('#inrRate');
+            let input = newCard.querySelector('#currencyInput');
+
+            input.value = currencySymbols[item.currency] + " " + item.amount
+            inrRate.textContent = '₹' + formatIndianCurrency(item.totalINR);
+
+            input.addEventListener('input', () => {
+                const currentAmount = input.value.replace(/^\D+/, ''); // Remove currency symbol
+                let finalAmount = currentAmount * item.rate;
+                inrRate.textContent = '₹' + formatIndianCurrency(finalAmount);
+
+                console.log(productData, 'pdData')
+
+                // Update the productData array by modifying the object with the matching rowID
+                productData = productData.map(product => {
+                    if (product.rowID === item.rowID) {
+                        // Update only the amount field for the matching product
+                        return { 
+                            ...product, 
+                            amount: currentAmount, 
+                            totalINR: formatIndianCurrency(finalAmount) 
+                        };
+                    }
+                    return product; // Return the other products unchanged
+                });
+
+                console.log(productData, 'updatedProductData'); // Log the updated productData array
+                renderCartItems(productData);
+
+
+                // Declare and immediately invoke the async function
+                (async () => {
+                    try {
+                        const apiUrl = 'https://mvc.extravelmoney.com/api-etm/';
+                        const params = new URLSearchParams({
+                            action: 'save_amount',
+                            token: token,  // Ensure token is defined
+                            rowID: item.rowID,
+                            amount: currentAmount
+                        });
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: params.toString(),
+                        });
+
+                        if (!response.ok) {
+                            // Detailed error message
+                            throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+                        }
+
+                        const resp = await response.json();
+                        if (resp.status) {
+
+
+
+
+                            console.log(resp);  // Log the API response if successful
+                        }
+                    } catch (error) {
+                        console.error('Error fetching data:', error);
+                        // Optionally, redirect to an error page
+                        // location.href = 'error.html';
+                    }
+                })();  // Immediately invoke the async function
+            });
+
+
+            console.log(data.length, 'mnbv')
+            if (data.length == 1) {
+                newCard.querySelector('#deleteCard').style.display = 'none'
+            } else {
+                newCard.querySelector('#deleteCard').style.display = 'block'
+                // Async event listener for delete button
+                newCard.querySelector('#deleteCard').addEventListener('click', async () => {
+                    loadinggg(true)
+
+                    try {
+                        const apiUrl = 'https://mvc.extravelmoney.com/api-etm/';
+
+                        const params = new URLSearchParams({
+                            action: 'add_remove_product',
+                            token: token,  // Ensure token is defined
+                            transaction: 'buy',
+                            function: 'remove',
+                            rowID: newCard.getAttribute('rowId')
+                        });
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: params.toString(),
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+                        }
+
+                        const resp = await response.json();
+                        console.log('API response:', resp);
+
+                        // Refresh the cards with the updated product list
+                        addCard(resp.products);
+                        loadinggg(false)
+
+                    } catch (error) {
+                        console.error('Error fetching data:', error);
+                        // Optionally, redirect or show an error message
+                    }
+
+                });
+            }
+
+
+            // Append the new card to the container
+            container.append(newCard);
+
+            if (data.length >= maxCards) {
+                document.querySelector('#addBtnContainer').style.display = 'none'
+            } else {
+                document.querySelector('#addBtnContainer').style.display = 'block'
+            }
+        });
+
+        console.log('All cards added');
+    }
+
+
+
+
+    document.querySelector('#cardProduct').addEventListener('dropdownChange', () => {
+        updateProdAddCard()
+
+    })
+    document.querySelector('#cardCurrency').addEventListener('dropdownChange', () => {
+        updateProdAddCard()
+
+    })
+
+
+    function updateProdAddCard() {
+
+        let product = document.querySelector('#cardProduct').getAttribute('dataval');
+        let currency = document.querySelector('#cardCurrency').getAttribute('dataval');
+
+        document.querySelector('#ProdAddcurrencyCode').textContent = currency;
+        let inrValue = parsedData[currency][product] * 1000
+        document.querySelector('#prodAddInrValue').textContent = formatIndianCurrency(inrValue) + ' INR'
+    }
+
+
+
+
 }
 
 
 
 
-document.querySelector('#cardProduct').addEventListener('dropdownChange',()=>{
-    updateProdAddCard()
+if (sessionStorage.getItem('productPage') === 'mt') {
+    loadinggg(true)
 
-})
-document.querySelector('#cardCurrency').addEventListener('dropdownChange',()=>{
-    updateProdAddCard()
-
-})
-
-
-function updateProdAddCard(){
-
-    let product=document.querySelector('#cardProduct').getAttribute('dataval');
-    let currency=document.querySelector('#cardCurrency').getAttribute('dataval');
-
-    document.querySelector('#ProdAddcurrencyCode').textContent=currency;
-    let inrValue=parsedData[currency][product]*1000
-    document.querySelector('#prodAddInrValue').textContent=formatIndianCurrency(inrValue)+' INR'
-}
-
-
-
-
-}
-
-
-
-
-if(sessionStorage.getItem('productPage')==='mt'){
- loadinggg(true)
-
-  let mtCity=sessionStorage.getItem('mtCity')
+    let mtCity = sessionStorage.getItem('mtCity')
     const params = new URLSearchParams({
         action: 'get_city_rate_mt',
         token: token,
@@ -424,9 +448,9 @@ if(sessionStorage.getItem('productPage')==='mt'){
     })
         .then(response => response.json())
         .then(data => {
-            
+
             generateCards(data.store_list);
-            document.querySelector('#mtSavings').textContent=data.savings
+            document.querySelector('#mtSavings').textContent = data.savings
             loadinggg(false)
         })
         .catch((error) => {
@@ -436,77 +460,77 @@ if(sessionStorage.getItem('productPage')==='mt'){
 
 
 
-        // Function to generate and insert cards based on API data
-        function generateCards(data) {
-            // Get the template and container
-            const template = document.getElementById('mtcardTemplate');
-            const container = document.getElementById('mtcardContainer');
-        
-            // Loop through each item in the API response
-            data.forEach(item => {
-                // Clone the template card
-                const clone = template.cloneNode(true);
-                clone.style.display = 'block'; // Make it visible
-        
-                // Set the storeID as a data-val attribute
-                clone.setAttribute('data-val', item.storeID);
-        
-                // Populate the card with the API data
-                clone.querySelector('.bank-logo').src = `public/images/logo/${item.logo}.svg`; // Assuming logo images are stored by vendor name
-                clone.querySelector('.bank-name').textContent = item.vendor_name;
-                clone.querySelector('.branch-visit').textContent = item.pg === "0" ? 'Branch Visit Required' : '';
-                clone.querySelector('.payment-method1').textContent = 'Online Payment';
-                clone.querySelector('.payment-method2').textContent = 'NEFT/RTGS';
-                clone.querySelector('.supported-services').textContent = 'Supports Flyware, Convera, PayMyTuition';
-                clone.querySelector('.bank-charges').textContent = `₹ ${item.bank_charges} Included`;
-        
-                const formattedTotalAmount = formatIndianCurrency(item.inr_total.toFixed(2));
-                clone.querySelector('.total-amount').textContent = `₹ ${formattedTotalAmount}`;
-        
-                // Add event listener to the "Select" button
-                const selectButton = clone.querySelector('.select-button');
+    // Function to generate and insert cards based on API data
+    function generateCards(data) {
+        // Get the template and container
+        const template = document.getElementById('mtcardTemplate');
+        const container = document.getElementById('mtcardContainer');
 
-                selectButton.addEventListener('click', () => {
+        // Loop through each item in the API response
+        data.forEach(item => {
+            // Clone the template card
+            const clone = template.cloneNode(true);
+            clone.style.display = 'block'; // Make it visible
+
+            // Set the storeID as a data-val attribute
+            clone.setAttribute('data-val', item.storeID);
+
+            // Populate the card with the API data
+            clone.querySelector('.bank-logo').src = `public/images/logo/${item.logo}.svg`; // Assuming logo images are stored by vendor name
+            clone.querySelector('.bank-name').textContent = item.vendor_name;
+            clone.querySelector('.branch-visit').textContent = item.pg === "0" ? 'Branch Visit Required' : '';
+            clone.querySelector('.payment-method1').textContent = 'Online Payment';
+            clone.querySelector('.payment-method2').textContent = 'NEFT/RTGS';
+            clone.querySelector('.supported-services').textContent = 'Supports Flyware, Convera, PayMyTuition';
+            clone.querySelector('.bank-charges').textContent = `₹ ${item.bank_charges} Included`;
+
+            const formattedTotalAmount = formatIndianCurrency(item.inr_total.toFixed(2));
+            clone.querySelector('.total-amount').textContent = `₹ ${formattedTotalAmount}`;
+
+            // Add event listener to the "Select" button
+            const selectButton = clone.querySelector('.select-button');
+
+            selectButton.addEventListener('click', () => {
 
 
-                    const params = new URLSearchParams({
-                        action: 'select_store_mt',
-                        token: token,
-                        storeID: item.storeID
-                    });
-                
-                    fetch('https://mvc.extravelmoney.com/api-etm/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: params.toString(),
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data)
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                            // location.href='error.html'
-                        });
-
-                        if(userCheck()){
-                            location.href='/Contact-Details'
-                       }
-                       else{
-                        
-                        userCheck()
-                           openOtpWidget()
-                           
-                       }
-                    
+                const params = new URLSearchParams({
+                    action: 'select_store_mt',
+                    token: token,
+                    storeID: item.storeID
                 });
-        
-                // Add the clone to the container
-                container.appendChild(clone);
+
+                fetch('https://mvc.extravelmoney.com/api-etm/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: params.toString(),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        // location.href='error.html'
+                    });
+
+                if (userCheck()) {
+                    location.href = '/Contact-Details'
+                }
+                else {
+
+                    userCheck()
+                    openOtpWidget()
+
+                }
+
             });
-        }
+
+            // Add the clone to the container
+            container.appendChild(clone);
+        });
+    }
 }
 
 
@@ -542,9 +566,9 @@ chooseCityOverlay.addEventListener('click', (event) => {
 
 
 function openOtpWidget() {
-    window.scroll(0,0)
+    window.scroll(0, 0)
     document.querySelector('.chooseCityOverlay').style.display = 'block';
-    document.querySelector('body').classList.add('snipContainer'); 
+    document.querySelector('body').classList.add('snipContainer');
     console.log(document.querySelector('body').classList)
     document.querySelector('.otpWidget').style.display = 'flex';
     document.querySelector('#mobNumber').focus()
@@ -561,15 +585,15 @@ function closeOtpWidget() {
     history.pushState({ widgetOpen: false }, '', '');
 
 }
-let otpInputs=document.querySelectorAll('.otpInputBlock input');
+let otpInputs = document.querySelectorAll('.otpInputBlock input');
 // Wrap the logic inside a function
 function sendOtp() {
-    
+
     let mobNumber = document.querySelector('#mobNumber');
     let otpInputContainer = document.querySelector('#otpInputContainer');
-    let countryCode=document.querySelector('.countryCodeContainer').getAttribute('dataval')
-    
-    
+    let countryCode = document.querySelector('.countryCodeContainer').getAttribute('dataval')
+
+
     // Check if the mobile number value exists and is a valid number
     if (mobNumber.value === "" || !/^\d+$/.test(mobNumber.value)) {
         insertAlertBelowElement(otpInputContainer, 'Invalid mobile number');
@@ -578,7 +602,7 @@ function sendOtp() {
         removeAlertBelowElement(otpInputContainer);
     }
 
-    
+
     // Async function for sending OTP
     (async () => {
         loadinggg(true)
@@ -606,7 +630,7 @@ function sendOtp() {
                 console.log(resp);
                 document.querySelector('#sendOtpMain').style.display = 'none';
                 document.querySelector('#verifyOtpMain').style.display = 'flex';
-                document.querySelector('#mobNum').textContent=countryCode+" "+mobNumber.value
+                document.querySelector('#mobNum').textContent = countryCode + " " + mobNumber.value
                 otpInputs[0].focus();
                 activeResendOtp()
                 loadinggg(false)
@@ -622,7 +646,7 @@ function sendOtp() {
 document.querySelector('#optSend').addEventListener('click', sendOtp);
 
 // Add event listener for Enter key press
-document.querySelector('#mobNumber').addEventListener('keydown', function(event) {
+document.querySelector('#mobNumber').addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
         event.preventDefault();  // Prevent form submission or other default actions
         sendOtp();  // Call the same sendOtp function on Enter key press
@@ -630,37 +654,39 @@ document.querySelector('#mobNumber').addEventListener('keydown', function(event)
 });
 
 
-otpInputs[3].addEventListener('keydown',(event)=>{
+otpInputs[3].addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault();  // Prevent form submission or other default actions
-        
-       verifyOtp()
+
+        verifyOtp()
     }
 })
 
 
 document.querySelector('#otpVerify').addEventListener('click', () => {
     verifyOtp()
-        
+
 })
 
 
-function verifyOtp(){
+function verifyOtp() {
 
+    
     let fetchOtp = getOtpValue()
 
     console.log(fetchOtp.length)
     console.log(fetchOtp)
     console.log(token);
-    
+
     let otpContainer = document.querySelector('.otpInputBlock')
-    if (fetchOtp.length<4) {
+    removeAlertBelowElement(otpContainer)
+    if (fetchOtp.length < 4) {
         insertAlertBelowElement(otpContainer, 'Enter a valid otp');
         return
     } else {
         removeAlertBelowElement(otpContainer)
     }
-    
+
     (async () => {
         loadinggg(true)
         try {
@@ -682,30 +708,37 @@ function verifyOtp(){
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
             const resp = await response.json();  // Use await to handle the promise returned by response.json()
-            console.log(resp,'resp.verified')
+            console.log(resp, 'resp.verified')
+
             
             if (resp.verified) {
 
                 console.log(resp)
-                sessionStorage.setItem('userId',resp.uid)
+                sessionStorage.setItem('userId', resp.uid)
                 const userInfo = {
-                    userId:resp.uid,
-                    countryCode:resp.customer_country_code,
-                    mobNum:resp.customer_mobile
-                  };
-                  
-                  // Store the object as a JSON string
-                  localStorage.setItem('userInfo', JSON.stringify(userInfo));
-                  
-                
+                    userId: resp.uid,
+                    countryCode: resp.customer_country_code,
+                    mobNum: resp.customer_mobile
+                };
+
+                // Store the object as a JSON string
+                localStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+
                 closeOtpWidget()
-                if(sessionStorage.getItem('productPage')==='fx'){
-                    location.href='/Delivery-Details'
+                if (sessionStorage.getItem('productPage') === 'fx') {
+                    location.href = '/Delivery-Details'
                 }
-                else if(sessionStorage.getItem('productPage')==='mt'){
-                    
-                    location.href='/Contact-Details'
+                else if (sessionStorage.getItem('productPage') === 'mt') {
+
+                    location.href = '/Contact-Details'
                 }
+            }
+            
+            else{
+                loadinggg(false)
+                insertAlertBelowElement(otpContainer, 'Incorrect OTP');
+                return
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -719,10 +752,10 @@ function verifyOtp(){
 
 document.querySelector('#changeNumberBtn').addEventListener('click', () => {
 
-    otpInputs.forEach((input)=>{
+    otpInputs.forEach((input) => {
         input.value = ''// Clears each OTP input field
         input.style.backgroundColor = 'rgba(14, 81, 160, 0.1)';
-    } ); 
+    });
     document.querySelector('#sendOtpMain').style.display = 'flex'
     document.querySelector('#verifyOtpMain').style.display = 'none'
 })
@@ -739,7 +772,7 @@ function activeResendOtp() {
     // Initialize the countdown timer
     const countdown = setInterval(() => {
         otpTimer.textContent = `In ${timeLeft}s`; // Update the displayed time
-        
+
         timeLeft--; // Decrease the time
 
         if (timeLeft < 0) {
@@ -753,7 +786,7 @@ function activeResendOtp() {
 }
 
 // Adding click event listener to the resend span element
-document.querySelector('.otpResendBtn').addEventListener('click', function() {
+document.querySelector('.otpResendBtn').addEventListener('click', function () {
     if (isResendEnabled) { // Check if resend is enabled
         let otpTimer = document.querySelector('.otpTimer');
         let resendBtn = document.querySelector('.otpResendBtn');
@@ -765,10 +798,10 @@ document.querySelector('.otpResendBtn').addEventListener('click', function() {
         isResendEnabled = false;                // Disable further resends
 
         // Call the function to send OTP
-        sendOtp(); 
+        sendOtp();
 
         // Restart the countdown
-        activeResendOtp(); 
+        activeResendOtp();
     } else {
         console.log('Resend is disabled. Please wait for the timer.');
     }

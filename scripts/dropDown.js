@@ -1,3 +1,22 @@
+
+
+// Global function to handle setting innerHTML of selectedItem and li elements
+function setSelectedItemInnerHTML(dropdownId, item, selectedItem) {
+    const dropdownMain = document.getElementById(dropdownId);
+
+    // Check if the dropdown has a 'custom-content' attribute
+    if (dropdownMain && dropdownMain.hasAttribute('custom-content')) {
+        if(dropdownId==='contryCodeMain'){
+            selectedItem.innerHTML=`<span>${item.getAttribute('mob-code')}</span><span>${item.getAttribute('value')}</span>`
+        }
+    } else {
+        console.log(item,'jjnn')
+        // Default behavior: directly set the itemInnerHTML passed as the parameter
+        selectedItem.innerHTML = item.innerHTML;
+    }
+}
+
+// Function to select the first dropdown item
 function selectFirstDropdownItem(dropdownMain) {
     const dropdownList = dropdownMain.querySelector('.dropdownList');
     const selectedItem = dropdownMain.querySelector('.selectedItem');
@@ -5,13 +24,15 @@ function selectFirstDropdownItem(dropdownMain) {
 
     if (items.length > 0) {
         const firstItem = items[0];
-       
-        selectedItem.innerHTML = firstItem.innerHTML;
+
+        // Globalized call to set innerHTML, passing the innerHTML of the firstItem
+        setSelectedItemInnerHTML(dropdownMain.id, firstItem, selectedItem);
+
         dropdownMain.setAttribute('dataVal', firstItem.getAttribute("value"));
 
         // Add 'selected' class to the first item instead of hiding it
         firstItem.classList.add('selectedDropDown');
-        
+
         // Store the selected value in sessionStorage
         sessionStorage.setItem(`dropdown_${dropdownMain.id}_selected`, firstItem.getAttribute("value"));
 
@@ -57,7 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (storedValue) {
             const item = dropdownList.querySelector(`li[value="${storedValue}"]`);
             if (item) {
-                selectedItem.innerHTML = item.innerHTML;
+                // Use globalized function to set the innerHTML
+                setSelectedItemInnerHTML(dropdownMain.id, item, selectedItem);
                 dropdownMain.setAttribute('dataVal', item.getAttribute("value"));
 
                 // Add 'selected' class to the stored item
@@ -86,10 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             dropdownMain.classList.toggle('open');
-
-            // if (searchEnabled && searchInput) {
-            //     searchInput.focus();
-            // }
         });
 
         dropdownList.addEventListener('click', (event) => {
@@ -103,7 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     previouslySelected.classList.remove('selectedDropDownItem');
                 }
 
-                selectedItem.innerHTML = item.innerHTML;
+                // Use globalized function to set the innerHTML with custom content if applicable
+                setSelectedItemInnerHTML(dropdownMain.id, item, selectedItem);
                 dropdownMain.setAttribute('dataVal', item.getAttribute("value"));
 
                 // Add 'selected' class to the newly selected item
@@ -134,16 +153,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-
         if (searchEnabled && searchInput) {
             searchInput.addEventListener('input', () => {
                 const filter = searchInput.value.toLowerCase();
                 const items = dropdownList.querySelectorAll('li:not(.template)');
-                
+
                 items.forEach(item => {
                     const text = item.innerHTML.toLowerCase();
                     const alternativeName = item.getAttribute('alternativeName') ? item.getAttribute('alternativeName').toLowerCase() : '';
-                    
+
                     if (text.includes(filter) || alternativeName.includes(filter)) {
                         item.style.display = ''; 
                     } else {
@@ -167,7 +185,7 @@ document.addEventListener('dropdownChange', (event) => {
 
 function getSelectedDropdownItemElement(dropdownId) {
     const dropdownMain = document.getElementById(dropdownId);
-    
+
     if (!dropdownMain) {
         console.error(`Dropdown with ID ${dropdownId} not found.`);
         return null;
@@ -178,7 +196,7 @@ function getSelectedDropdownItemElement(dropdownId) {
 
     if (selectedValue) {
         const selectedItemElement = dropdownList.querySelector(`li[value="${selectedValue}"]`);
-        
+
         if (selectedItemElement) {
             return selectedItemElement; 
         }
@@ -187,9 +205,19 @@ function getSelectedDropdownItemElement(dropdownId) {
     return null;
 }
 
+
+
+
 function forceSelectDropdownItem(dropdownId, valueToSelect) {
+
+
+    console.log()
+
+
+
     const dropdownMain = document.getElementById(dropdownId);
-    
+
+
     if (!dropdownMain) {
         console.error(`Dropdown with ID ${dropdownId} not found.`);
         return;
@@ -197,12 +225,14 @@ function forceSelectDropdownItem(dropdownId, valueToSelect) {
 
     const dropdownList = dropdownMain.querySelector('.dropdownList');
     const selectedItem = dropdownMain.querySelector('.selectedItem');
+
     
     const item = dropdownList.querySelector(`li[value="${valueToSelect}"]`);
+
     
     if (item) {
-        // Update the selected item display
-        selectedItem.innerHTML = item.innerHTML;
+        // Use globalized function to set the innerHTML
+        setSelectedItemInnerHTML(dropdownMain.id, item, selectedItem);
         dropdownMain.setAttribute('dataVal', item.getAttribute('value'));
 
         // Remove 'selectedDropDownItem' class from any previously selected item
@@ -215,7 +245,7 @@ function forceSelectDropdownItem(dropdownId, valueToSelect) {
         item.classList.add('selectedDropDownItem');
 
         // Store the selected value in sessionStorage
-        sessionStorage.setItem(`dropdown_${dropdownMain.id}_selected`, item.getAttribute("value"));
+        sessionStorage.setItem(`dropdown_${dropdownMain.id}_selected`, item.getAttribute('value'));
 
         // Dispatch the dropdownChange event
         const changeEvent = new CustomEvent('dropdownChange', {
@@ -230,38 +260,3 @@ function forceSelectDropdownItem(dropdownId, valueToSelect) {
         console.warn(`Dropdown item with value "${valueToSelect}" not found.`);
     }
 }
-
-
-
-// Function to save input field data to sessionStorage
-function saveInputData() {
-    // Select only input fields with the 'data-save' attribute
-    const inputs = document.querySelectorAll('input[data-save], textarea[data-save], select[data-save]');
-
-    // Loop through each input field
-    inputs.forEach(input => {
-        // Save the input's value in sessionStorage using its unique ID or name as the key
-        sessionStorage.setItem(input.id || input.name, input.value);
-    });
-}
-
-// Function to load saved data from sessionStorage and set it to the input fields
-function loadInputData() {
-    // Select only input fields with the 'data-save' attribute
-    const inputs = document.querySelectorAll('input[data-save], textarea[data-save], select[data-save]');
-
-    // Loop through each input field
-    inputs.forEach(input => {
-        const savedValue = sessionStorage.getItem(input.id || input.name);
-        if (savedValue) {
-            // Set the saved value to the input field if it exists in sessionStorage
-            input.value = savedValue;
-        }
-    });
-}
-
-// Listen for DOMContentLoaded event to restore the input data on page load
-document.addEventListener('DOMContentLoaded', loadInputData);
-
-// Attach event listeners to all input fields to save data when they change
-document.addEventListener('input', saveInputData);

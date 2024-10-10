@@ -383,7 +383,10 @@
                                       <span>Compare Rates</span>
                                 </div>
                                 
-                                  <p>Compare Rates offered by RBI authorized money changers in Bangalore</p>
+                                  <p>Compare Rates offered by RBI authorized money changers in Bangalore
+                                  Compare Rates offered by RBI authorized money changers in Bangalore
+                                  Compare Rates offered by RBI authorized money changers in Bangalore
+                                  </p>
 
                             </div>
                         </div>

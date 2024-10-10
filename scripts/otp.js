@@ -15,13 +15,32 @@ document.addEventListener('DOMContentLoaded', function () {
     let inputs = otpInputAll;
 
     inputs.forEach((input, index) => {
+        // Prevent non-numeric inputs on keydown
+        input.addEventListener('keydown', (event) => {
+            // Allow only numbers and control keys (like backspace)
+            if (!/[0-9]/.test(event.key) && 
+                event.key !== 'Backspace' && 
+                event.key !== 'ArrowLeft' && 
+                event.key !== 'ArrowRight' &&
+                event.key !== 'Tab') {
+                event.preventDefault();
+            }
+        });
+
+        // Handle input event to limit to only one number
         input.addEventListener('input', (event) => {
             const currentInput = event.target;
-            currentInput.style.backgroundColor = 'rgba(14, 81, 160, 1)'; // Set background opacity to 1
+            const inputValue = currentInput.value;
 
+            // Remove any non-numeric characters
+            currentInput.value = inputValue.replace(/\D/g, '');
+
+            // Ensure only one character per input
             if (currentInput.value.length > 1) {
-                currentInput.value = currentInput.value.slice(0, 1); // Ensure only one character per input
+                currentInput.value = currentInput.value.slice(0, 1);
             }
+
+            currentInput.style.backgroundColor = 'rgba(14, 81, 160, 1)'; // Set background opacity to 1
 
             // Move to the next input if any
             if (currentInput.value !== '' && index < inputs.length - 1) {
@@ -70,43 +89,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-// Fetch country data from the optimized RestCountries API
-fetch('https://restcountries.com/v3.1/all?fields=name,cca2,idd')
-  .then(response => response.json())
-  .then(data => {
-    // Sort the data so that India appears first
-    data.sort((a, b) => {
-      if (a.name.common === 'India') return -1;
-      if (b.name.common === 'India') return 1;
-      return 0;
-    });
 
-    // Get the <ul> element where country codes will be appended
-    const countryCodeDropDown = document.getElementById("countryCodeDropDown");
-    const countryCodeContainer = document.querySelector(".countryCodeContainer");
+// Access the country data from intl-tel-input
+const countryData = intlTelInputGlobals.getCountryData();
 
-    // Iterate through the country data and generate the dropdown
-    data.forEach(country => {
-      if (country.idd && country.idd.root) { // Ensure the country has a phone code
-        const dialCode = `${country.idd.root}${country.idd.suffixes ? country.idd.suffixes[0] : ''}`;
-        const countryName = country.name.common;  // Country name
-        const countryISO = country.cca2;  // ISO2 code
+// Get the <ul> element where country codes will be appended
+const countryCodeDropDown = document.getElementById("countryCodeDropDown");
 
-        // Create <li> for each country
-        const li = document.createElement("li");
-        li.className = "text-sm";
-        li.setAttribute('value', `${dialCode}`);
-        li.setAttribute('alternativeName', countryName);
+// Sort the country data so that India appears first
+countryData.sort((a, b) => {
+  if (a.name === 'India') return -1;
+  if (b.name === 'India') return 1;
+  return 0;
+});
 
-        // Set the innerHTML for each <li> with country name and dial code
-        li.innerHTML = `<span>${dialCode}</span><span> ${countryISO}</span>`;
+// Iterate through the country data and generate the dropdown
+countryData.forEach(country => {
+    console.log(country)
+  const dialCode = `+${country.dialCode}`;
+  const countryName = country.name;  // Country name
+  const countryISO = country.iso2.toUpperCase();  // ISO2 code
 
-        // Append <li> to the dropdown
-        countryCodeDropDown.appendChild(li);
-      }
-    });
+  
+  // If the country is USA or India, log them for verification
+  if (countryName.toLowerCase() === 'united states' || countryName.toLowerCase() === 'india') {
+    console.log(`Found: ${countryName}`);
+  }
 
-    // Select the first dropdown item (which is now India)
-    selectFirstDropdownItem(countryCodeContainer);
-  })
-  .catch(error => console.error('Error fetching country data:', error));
+  // Create <li> for each country
+  const li = document.createElement("li");
+  li.className = "text-sm";
+  li.setAttribute('value', countryISO);
+  li.setAttribute('alternativeName', countryName);
+  li.setAttribute('mob-code', dialCode);
+  // Set the innerHTML for each <li> with country name and dial code
+  li.innerHTML = `<span>${dialCode}</span> <span> ${countryName}</span>`;
+
+  // Append <li> to the dropdown
+  countryCodeDropDown.appendChild(li);
+});
+forceSelectDropdownItem('contryCodeMain','IN')
+
+
