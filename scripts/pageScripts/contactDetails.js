@@ -1,4 +1,15 @@
 
+let nextPageUrl='/Review&Payment'
+// Then on the previous page, use this to detect when the page is revisited
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        // Force reload if the page is cached
+        window.location.reload();
+    }
+});
+if(!userCheck()){
+    window.location.href='/'
+}
 
 // Retrieve token from sessionStorage
 let token = sessionStorage.getItem('token');
@@ -47,11 +58,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                     templateItem.classList.remove('template')
 
+                    // Remove all existing items except the template
                     dropdownList.querySelectorAll('.dropdownItem:not([value="template"])').forEach(item => item.remove());
+
+                    // Add an initial "Select" option with a null value
+                    const selectItem = templateItem.cloneNode(true);
+                    selectItem.style.display = 'flex';  // Make the cloned item visible
+                    selectItem.setAttribute('value', 'none');  // Set value to an empty string (null equivalent)
+                    selectItem.querySelector('span').textContent = 'Select Branch';  // Set the text to 'Select'
+                    dropdownList.appendChild(selectItem);  // Append the "Select" item to the dropdown
 
                     // Populate the dropdown list with cities
                     areas.forEach(area => {
-
                         // Clone the template item
                         const newItem = templateItem.cloneNode(true);
                         newItem.style.display = 'flex';  // Make the cloned item visible
@@ -62,6 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         dropdownList.appendChild(newItem);
                     });
 
+
                     // Call the function after the list is fully updated
                     const dropdownMain = document.querySelector('#branchDropDownMain');
                     selectFirstDropdownItem(dropdownMain);
@@ -71,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 finalUpdateDocuments(resp.kyc_list)
             }
 
-            document.querySelector('#customerMobile').value = resp.mobile
+            document.querySelector('#customerMobile').querySelector('span').textContent = resp.mobile
             document.querySelector('#customerName').value = resp.customer_name
             document.querySelector('#customerEmail').value = resp.customer_email
             sessionStorage.setItem('customerName', resp.customer_name)
@@ -82,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch (error) {
         console.error('Error fetching data:', error);
-        // location.href='error.html'
+        location.href='error.html'
 
     }
 });
@@ -123,7 +142,7 @@ const documentsData = {
         "Valid Visa",
         "Work Contract Letter"
     ],
-    holiday: [
+    holidayLeisure: [
         "Passport",
         "Pan Card",
         "Onward Air Ticket",
@@ -218,11 +237,11 @@ document.querySelector('#contactUpdateBtn').addEventListener('click', async () =
     let purpose = '';
     let branch = '';
     let universityName = '';
-    let formattedDate='';
+    let formattedDate = '';
     // Check the product type and gather additional required inputs
     if (productType === 'fx') {
         travelDate = sessionStorage.getItem('selectedDate');
-        
+
 
         // Step 2: Check if travelDate is valid
         if (travelDate) {
@@ -243,13 +262,15 @@ document.querySelector('#contactUpdateBtn').addEventListener('click', async () =
             console.log("No valid travel date found in sessionStorage");
         }
 
-        
+
         purpose = document.querySelector('#purposeSelector').getAttribute('dataval');
         sessionStorage.setItem('fxPurpose', purpose)
     } else if (productType === 'mt') {
         branch = document.querySelector('#branchDropDownMain').getAttribute('dataval');
+        console.log(branch)
         universityName = document.querySelector('#universityName').value;
         let elem = document.querySelector('#universityName');
+
         if (!universityName || universityName === "") {
             insertAlertBelowElement(elem, 'Please Enter a valid university name');
             return;
@@ -257,6 +278,15 @@ document.querySelector('#contactUpdateBtn').addEventListener('click', async () =
             removeAlertBelowElement(elem);
         }
 
+
+        if(branch==="none"){
+            insertAlertBelowElement(document.querySelector('#branchDropDownMain'),'Select a Branch')
+            return
+        }
+        else{
+            removeAlertBelowElement(document.querySelector('#branchDropDownMain'))
+        }
+        
     }
 
     // Basic validation to ensure all fields are filled
@@ -276,7 +306,7 @@ document.querySelector('#contactUpdateBtn').addEventListener('click', async () =
         removeAlertBelowElement(elem2);
     }
 
-    
+
 
     loadinggg(true)
 
@@ -288,7 +318,7 @@ document.querySelector('#contactUpdateBtn').addEventListener('click', async () =
         travel_date: formattedDate,
         purpose: purpose,
     })
-    
+
     try {
         const apiUrl = 'https://mvc.extravelmoney.com/api-etm/';
         let params;
@@ -333,14 +363,14 @@ document.querySelector('#contactUpdateBtn').addEventListener('click', async () =
         if (resp.status) {
             console.log(resp)
             // Redirect to the next page if the request is successful
-            location.href = '/Review&Payment';
+            location.href = nextPageUrl
             setTimeout(() => {
                 loadinggg(false)
             }, 2000);
         }
     } catch (error) {
         console.error('Error fetching data:', error);
-        // location.href='error.html'
+        location.href='error.html'
     }
 });
 

@@ -16,15 +16,15 @@
         style="backdrop-filter: blur(7px)">
 
         <div
-                    class="otpWidget pt-10 customMd:pt-5 flex w-full  customMd::w-[30%] customMd::min-w-[26.5rem] absolute  z-20 top-0 left-0 bg-white px-5  py-5 customMd:rounded-xl flex-col customMd:mt-12 customMd:bg-white  min-h-[100vh] customMd:min-h-[0] h-[34rem] customMd:max-w-2xl customMd:left-2/4  customMd:top-1/2  customMd:transform customMd:-translate-x-1/2 customMd:-translate-y-1/2">
+                    class="otpWidget pt-10 customMd:pt-5 flex w-full  customMd::w-[30%] customMd::min-w-[26.5rem] absolute  z-20 top-0 left-0 bg-white px-5  py-5 customMd:rounded-xl flex-col customMd:mt-12 customMd:bg-white  min-h-[100vh] customMd:min-h-[0] h-[37rem] customMd:max-w-2xl customMd:left-2/4  customMd:top-1/2  customMd:transform customMd:-translate-x-1/2 customMd:-translate-y-1/2">
                     <img class="w-44" src="public/images/logo/ETM logo without tagline.png" alt="">
                     
                     <div id="sendOtpMain" class="flex flex-col ">
                         <img class="w-48 mt-4" src="public/images/otpImg.svg" alt="">
 
-                    <span class="text-black text-sm font-semibold mt-6 leading-7">Enter Your Mobile Number</span>
+                    <span class="text-black text-sm font-semibold mt-6 leading-7" >Enter Your Mobile Number</span>
 
-                    <div class="flex justify-between gap-2">
+                    <div class="flex justify-between gap-2" id="otpMobileContainer">
                         <div id=""
                     class="p-[2px] rounded-[12px]  customGradient justify-start items-center gap-2.5 inline-flex w-[35%]">
                     <div style="padding: 0.75rem 0.5rem;height: 3rem;" class="justify-start rounded-[10px] items-center gap-2.5 flex w-full border-0 bg-white">
@@ -55,18 +55,30 @@
                     </div>
                         </div>
                     </div>
-                    <p class="text-[#777777] text-sm font-medium mt-4 leading-[21px]">We will send you one-time password to your mobile number</p>
+                    <p class="text-[#777777] text-sm font-medium mt-4 leading-[21px] mb-8">We will send you one-time password to your mobile number</p>
 
-                    <div id="optSend"
-                        class="h-12 px-2 py-3 bg-primary-blue rounded-lg justify-center items-center gap-1 inline-flex mt-8 select-none cursor-pointer">
-                        <span class="text-white text-sm font-bold">Send OTP</span>
+
+                    <div id="whatsappOtpSend" class=" px-4 py-3.5 bg-[#20bc73] rounded-lg justify-center items-center gap-1 inline-flex">
+                        <div class="text-white text-base font-bold font-['Plus Jakarta Sans']">Get OTP on WhatsApp</div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path
                                 d="M15.781 12.7823L8.28104 20.2823C8.21136 20.3519 8.12863 20.4072 8.03759 20.4449C7.94654 20.4826 7.84896 20.5021 7.75042 20.5021C7.65187 20.5021 7.55429 20.4826 7.46324 20.4449C7.3722 20.4072 7.28947 20.3519 7.21979 20.2823C7.15011 20.2126 7.09483 20.1299 7.05712 20.0388C7.01941 19.9478 7 19.8502 7 19.7516C7 19.6531 7.01941 19.5555 7.05712 19.4645C7.09483 19.3734 7.15011 19.2907 7.21979 19.221L14.1901 12.2516L7.21979 5.28226C7.07906 5.14153 7 4.95066 7 4.75164C7 4.55261 7.07906 4.36174 7.21979 4.22101C7.36052 4.08028 7.55139 4.00122 7.75042 4.00122C7.94944 4.00122 8.14031 4.08028 8.28104 4.22101L15.781 11.721C15.8508 11.7907 15.9061 11.8734 15.9438 11.9644C15.9816 12.0555 16.001 12.1531 16.001 12.2516C16.001 12.3502 15.9816 12.4478 15.9438 12.5388C15.9061 12.6299 15.8508 12.7126 15.781 12.7823Z"
                                 fill="white" />
                         </svg>
-                        
                     </div>
+
+                    <div id="optSend" class=" px-4 py-3.5 bg-neutral-100 rounded-lg justify-center items-center gap-1 inline-flex mt-4">
+                        <div class="text-[#1f1f1f]/40 text-base font-bold font-['Plus Jakarta Sans']">Get OTP via SMS</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M15.781 12.7823L8.28104 20.2823C8.21136 20.3519 8.12863 20.4072 8.03759 20.4449C7.94654 20.4826 7.84896 20.5021 7.75042 20.5021C7.65187 20.5021 7.55429 20.4826 7.46324 20.4449C7.3722 20.4072 7.28947 20.3519 7.21979 20.2823C7.15011 20.2126 7.09483 20.1299 7.05712 20.0388C7.01941 19.9478 7 19.8502 7 19.7516C7 19.6531 7.01941 19.5555 7.05712 19.4645C7.09483 19.3734 7.15011 19.2907 7.21979 19.221L14.1901 12.2516L7.21979 5.28226C7.07906 5.14153 7 4.95066 7 4.75164C7 4.55261 7.07906 4.36174 7.21979 4.22101C7.36052 4.08028 7.55139 4.00122 7.75042 4.00122C7.94944 4.00122 8.14031 4.08028 8.28104 4.22101L15.781 11.721C15.8508 11.7907 15.9061 11.8734 15.9438 11.9644C15.9816 12.0555 16.001 12.1531 16.001 12.2516C16.001 12.3502 15.9816 12.4478 15.9438 12.5388C15.9061 12.6299 15.8508 12.7126 15.781 12.7823Z"
+                                fill="white" />
+                        </svg>
+                    </div>
+
+                    
+
+
                     </div>
 
                     <div id="verifyOtpMain" class="mt-6 flex flex-col h-full ">
@@ -137,8 +149,7 @@
                             <span class="text-black text-xl font-bold ">2</span>
                         </div>
                         <span
-                            class="text-black text-opacity-60 text-lg font-normal  absolute -bottom-12 min-w-48 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">Delivery
-                            Details</span>
+                            class="text-black text-opacity-60 text-lg font-normal  absolute -bottom-12 min-w-48 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">Choose Provider</span>
                     </div>
                     <div class="grow shrink basis-0 h-0.5 bg-[#20bc73] border border-[#eaeef4]"></div>
                     <div class="flex flex-col relative">
@@ -295,77 +306,73 @@
                                         </div>
 
                                         <ul class="dropdownList overflow-scroll">
-                                            <li value="USD" >
-                                                <div class="flex flex-col justify-start items-start">
-                                                    <span class="font-medium">USD</span>
-                                                    
-                                                    <span class="text-sm text-black/40  font-normal">United States Dollar</span>
-                                                </div>
-                                                
-                                            </li>
-                                            <li value="AUD" >
-                                                <div class="flex flex-col justify-start items-start">
-                                                    <span class="font-medium">AUD</span>
-                                                    
-                                                    <span class="text-sm text-black/40  font-normal">Australian Dollar</span>
-                                                </div>
-                                                
-                                            </li>
-
-                                            <li value="CAD" >
-                                                <div class="flex flex-col justify-start items-start">
-                                                    <span class="font-medium">CAD</span>
-                                                    
-                                                    <span class="text-sm text-black/40  font-normal">Canadian Dollar</span>
-                                                </div>
-                                                
-                                            </li>
-
-                                            <li value="THB" >
-                                                <div class="flex flex-col justify-start items-start">
-                                                    <span class="font-medium">THB</span>
-                                                    
-                                                    <span class="text-sm text-black/40  font-normal">Thai Baht</span>
-                                                </div>
-                                                
-                                            </li>
-
-                                            <li value="GBP" >
-                                                <div class="flex flex-col justify-start items-start">
-                                                    <span class="font-medium">GBP</span>
-                                                    
-                                                    <span class="text-sm text-black/40  font-normal">British Pound</span>
-                                                </div>
-                                                
-                                            </li>
-
-                                            <li value="SGD" >
-                                                <div class="flex flex-col justify-start items-start">
-                                                    <span class="font-medium">SGD</span>
-                                                    
-                                                    <span class="text-sm text-black/40  font-normal">singapore Dollar</span>
-                                                </div>
-                                                
-                                            </li>
-
-                                            <li value="USD" >
-                                                <div class="flex flex-col justify-start items-start">
-                                                    <span class="font-medium">EUR</span>
-                                                    
-                                                    <span class="text-sm text-black/40  font-normal">EURO</span>
-                                                </div>
-                                                
-                                            </li>
-
-                                            <li value="USD" >
-                                                <div class="flex flex-col justify-start items-start">
-                                                    <span class="font-medium">EUR</span>
-                                                    
-                                                    <span class="text-sm text-black/40  font-normal">EURO</span>
-                                                </div>
-                                                
-                                            </li>
-                                        </ul>
+    <li value="USD">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">USD</span>
+            <span class="text-sm text-black/40 font-normal">United States Dollar</span>
+        </div>
+    </li>
+    <li value="AUD">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">AUD</span>
+            <span class="text-sm text-black/40 font-normal">Australian Dollar</span>
+        </div>
+    </li>
+    <li value="GBP">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">GBP</span>
+            <span class="text-sm text-black/40 font-normal">British Pound</span>
+        </div>
+    </li>
+    <li value="CAD">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">CAD</span>
+            <span class="text-sm text-black/40 font-normal">Canadian Dollar</span>
+        </div>
+    </li>
+    <li value="EUR">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">EUR</span>
+            <span class="text-sm text-black/40 font-normal">Euro</span>
+        </div>
+    </li>
+    <li value="JPY">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">JPY</span>
+            <span class="text-sm text-black/40 font-normal">Japanese Yen</span>
+        </div>
+    </li>
+    <li value="MYR">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">MYR</span>
+            <span class="text-sm text-black/40 font-normal">Malaysian Ringgit</span>
+        </div>
+    </li>
+    <li value="NZD">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">NZD</span>
+            <span class="text-sm text-black/40 font-normal">New Zealand Dollar</span>
+        </div>
+    </li>
+    <li value="SGD">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">SGD</span>
+            <span class="text-sm text-black/40 font-normal">Singapore Dollar</span>
+        </div>
+    </li>
+    <li value="THB">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">THB</span>
+            <span class="text-sm text-black/40 font-normal">Thai Baht</span>
+        </div>
+    </li>
+    <li value="AED">
+        <div class="flex flex-col justify-start items-start">
+            <span class="font-medium">AED</span>
+            <span class="text-sm text-black/40 font-normal">UAE Dirham</span>
+        </div>
+    </li>
+                                                    </ul>
                                         <svg class="dropdownArrow" xmlns="http://www.w3.org/2000/svg"
                                             width="16" height="17" viewBox="0 0 16 17" fill="none">
                                             <path
@@ -420,7 +427,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="absolute right-0 flex justify-end items-start" id="deleteCard">
+                                            <div class="absolute right-0 flex justify-end items-start cursor-pointer" id="deleteCard">
     
                                                 <div class="flex justify-center items-center gap-1">
                                                     <div class="border-[#b42318]/40 rounded-full border p-1">
@@ -443,12 +450,12 @@
                                     <div class="border-t border-black/10 " id="errorMarkContainer">
                                         <div class="flex px-4 md:px-10 py-4 justify-between flex-col md:flex-row gap-4">
                                             <div class="w-full md:w-fit">
-                                                <p class="text-black text-sm font-normal">Buy USD </p>
+                                                <p class="text-black text-sm font-normal">Buy <span id="cardCurrencyName"></span> </p>
                                                 <input id="currencyInput" type="text"  value="$ 1000"
                                                     class="text-xl buyAmount w-full md:w-fit  font-semibold leading-[30px] text-primary-blue border-b border-black/20 outline-none ">
                                             </div>
                                             <div class="flex flex-col items-end">
-                                                <p class="text-black text-sm font-normal ">Exchange Rate is</p>
+                                                <p class="text-black text-sm font-normal ">Total (INR)</p>
                                                 <p class="text-black text-xl  font-bold leading-[30px]" id="inrRate">₹ 00000</p>
                                             </div>
     
@@ -535,7 +542,7 @@
 
 
                             <div class="bg-white py-4 rounded-t-3xl  md:static fixed  left-1/2  transform -translate-x-1/2   md:translate-x-0 md:translate-y-0 bottom-0 w-full flex items-center justify-center ">
-                            <div class=" h-12 px-2 py-3 bg-primary-blue rounded-lg justify-center items-center gap-1 inline-flex mt-4 md:mt-20 mb-0 md:mb-4   z-10 w-[90%] md:w-full"
+                            <div class=" h-12 px-2 py-3 cursor-pointer bg-primary-blue rounded-lg justify-center items-center gap-1 inline-flex mt-4 md:mt-20 mb-0 md:mb-4   z-10 w-[90%] md:w-full"
                                 id="bestRatesFetchBtn">
                                 <div class="text-white text-sm font-bold">Proceed to Next</div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -640,15 +647,7 @@
         <img src="" alt="Bank Logo" class="bank-logo w-32">
         <p class="text-black text-lg mt-2 font-semibold bank-name"></p>
 
-        <div class="flex justify-start items-center gap-2 w-full">
-            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="7" viewBox="0 0 7 7" fill="none">
-                <circle cx="3.5" cy="3.62842" r="3" fill="#0E51A0"></circle>
-            </svg>
-            <div class="flex justify-between items-center w-full">
-                <p class="text-primary-blue text-sm font-semibold branch-visit"></p>
-                <span class="text-black/40 text-[11px] font-normal underline see-branch">See Branch Locations</span>
-            </div>
-        </div>
+        
 
         <div class="flex justify-between items-end w-full">
 
@@ -686,7 +685,7 @@
         </div>
         
 
-        <div class="select-button customMd:max-w-[10rem] h-10 pl-4 pr-2.5 py-2.5 bg-[#0e51a0] rounded-[20px] justify-center items-center gap-0.5 inline-flex mt-4 w-full">
+        <div class="select-button cursor-pointer customMd:max-w-[10rem] h-10 pl-4 pr-2.5 py-2.5 bg-[#0e51a0] rounded-[20px] justify-center items-center gap-0.5 inline-flex mt-4 w-full">
             <div class="text-white text-sm font-medium">Select</div>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M9.53104 3.96896L17.031 11.469C17.1008 11.5386 17.1561 11.6213 17.1938 11.7124C17.2316 11.8034 17.251 11.901 17.251 11.9996C17.251 12.0981 17.2316 12.1957 17.1938 12.2868C17.1561 12.3778 17.1008 12.4606 17.031 12.5302L9.53104 20.0302C9.39031 20.1709 9.19944 20.25 9.00042 20.25C8.80139 20.25 8.61052 20.1709 8.46979 20.0302C8.32906 19.8895 8.25 19.6986 8.25 19.4996C8.25 19.3006 8.32906 19.1097 8.46979 18.969L15.4401 11.9996L8.46979 5.03021C8.40011 4.96052 8.34483 4.8778 8.30712 4.78675C8.26941 4.69571 8.25 4.59813 8.25 4.49958C8.25 4.40104 8.26941 4.30345 8.30712 4.21241C8.34483 4.12136 8.40011 4.03864 8.46979 3.96896C8.53947 3.89927 8.6222 3.844 8.71324 3.80629C8.80429 3.76858 8.90187 3.74916 9.00042 3.74916C9.09896 3.74916 9.19654 3.76858 9.28759 3.80629C9.37863 3.844 9.46136 3.89927 9.53104 3.96896Z" fill="white"/>

@@ -22,15 +22,22 @@ function revertScreen() {
     document.querySelector('#verifyOtpMain').style.display = 'none'
 }
 
+
+let mobNumber;
+let countryCode;
 function sendOtp() {
 
-    let mobNumber = document.querySelector('#mobNumber');
+    mobNumber = document.querySelector('#mobNumber');
     let otpInputContainer = document.querySelector('#otpInputContainer');
-    let countryCode = getSelectedDropdownItemElement('contryCodeMain').getAttribute('mob-code')
+    countryCode = getSelectedDropdownItemElement('contryCodeMain').getAttribute('mob-code');
+
+// Remove the '+' if it exists at the start of the string
+countryCode = countryCode.replace(/^\+/, ''); 
 
     
 
     console.log(mobNumber.value)
+    
     // Check if the mobile number value exists and is a valid number
     if (mobNumber.value === "" || !/^\d+$/.test(mobNumber.value)) {
         insertAlertBelowElement(otpInputContainer, 'Invalid mobile number');
@@ -46,8 +53,8 @@ function sendOtp() {
         try {
             const apiUrl = 'https://mvc.extravelmoney.com/api-etm/';
             const params = new URLSearchParams({
-                action: 'send_otp',
-                token: token,  // Assuming `token` is defined elsewhere in your code
+                action: 'user_login_otp',
+                mode:'sms',
                 country_code: countryCode,
                 mobile: mobNumber.value
             });
@@ -89,7 +96,7 @@ function verifyOtp() {
 
     let otpContainer = document.querySelector('.otpInputBlock')
     if (fetchOtp.length < 4) {
-        insertAlertBelowElement(otpContainer, 'Enter a valid otp');
+        insertAlertBelowElement(otpContainer, 'Enter a valid OTP');
         return
     } else {
         removeAlertBelowElement(otpContainer)
@@ -100,9 +107,10 @@ function verifyOtp() {
         try {
             const apiUrl = 'https://mvc.extravelmoney.com/api-etm/';
             const params = new URLSearchParams({
-                action: 'check_otp',
-                token: token,
-                otp: fetchOtp
+                action: 'user_login_validate',
+                otp: fetchOtp,
+                mobile:mobNumber.value,
+                country_code:countryCode
             });
 
             const response = await fetch(apiUrl, {
@@ -115,10 +123,18 @@ function verifyOtp() {
 
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
+
+            console.log({
+                action: 'user_login_validate',
+                otp: fetchOtp,
+                mobile:mobNumber.value,
+                country_code:countryCode
+            })
+            
             const resp = await response.json();  // Use await to handle the promise returned by response.json()
             console.log(resp, 'resp.verified')
 
-            if (resp.verified) {
+            if (resp.status) {
 
                 console.log(resp)
                 const userInfo = {

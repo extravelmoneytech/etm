@@ -233,11 +233,27 @@ body {
 .toggleItem {
   border-color: transparent;
 }
+.toggleItem span{
+  color: black;
+  --tw-text-opacity: 0.6;
+}
+.toggleItem svg{
+  fill: black;
+  fill-opacity: 0.6;
+}
 
 .activeToggle {
   border-color: #0E51A0;
 }
-
+.activeToggle span{
+  color: #0E51A0;
+  font-weight: 700;
+  --tw-text-opacity: 1;
+}
+.activeToggle svg{
+  fill: #0E51A0;
+  fill-opacity: 1;
+}
 
 .card {
   background: rgba(14, 81, 160, 0.05);
@@ -741,7 +757,7 @@ border: 1px solid rgba(0, 0, 0, 0.10);
 .kycExtender {
   display: none;
 }
-.kycExtender svg{
+.kycExtender .deleteIcon{
   display: none;
 }
 .uploadedContent{

@@ -295,11 +295,10 @@
                                         class="text-black text-opacity-60 font-semibold text-sm sm:text-base tracking-tighter">Users</span>
                                     <div class="flex">
                                     <img src="<?php echo $fold . 'public/images/user1.svg'; ?>" alt="" class="w-5"> 
-<img src="<?php echo $fold . 'public/images/user2.svg'; ?>" alt="" class="-ml-2 w-5"> 
-<img class="-ml-2 w-5" src="<?php echo $fold . 'public/images/user3.svg'; ?>" alt="">
-<img class="-ml-2 w-5" src="<?php echo $fold . 'public/images/user4.svg'; ?>" alt="">
-<img class="-ml-2 w-5" src="<?php echo $fold . 'public/images/user5.svg'; ?>" alt="">
-
+                                    <img src="<?php echo $fold . 'public/images/user2.svg'; ?>" alt="" class="-ml-2 w-5"> 
+                                    <img class="-ml-2 w-5" src="<?php echo $fold . 'public/images/user3.svg'; ?>" alt="">
+                                    <img class="-ml-2 w-5" src="<?php echo $fold . 'public/images/user4.svg'; ?>" alt="">
+                                    <img class="-ml-2 w-5" src="<?php echo $fold . 'public/images/user5.svg'; ?>" alt="">
                                     </div>
                                 </div>
                             </div>
@@ -632,14 +631,14 @@
                                     <div class="mt-[1.35rem]">
                                         <p class="text-gray-500 text-sm sm:text-mediumFont  font-medium">Send Money To
                                         </p>
-                                        <div class="dropdownMain select-none mt-1" data-search="true" id="mtCountryDropDown" dataval="usa">
+                                        <div class="dropdownMain select-none mt-1" data-search="true" id="mtCountryDropDown" dataval="">
 
                                             <div class="selectedItem">
 
                                             </div>
 
                                             
-                                                <ul class="dropdownList max-h-[300px] overflow-x-hidden overflow-y-scroll" id="mtCountryList">
+                                                <ul class="dropdownList max-h-[300px] overflow-x-hidden overflow-y-scroll" id="mtCountryList" defaultCountry="nz">
                                                 
                                                 </ul>
                                             

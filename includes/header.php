@@ -111,7 +111,7 @@
                                 </div>
                             </div>
             
-                            <a  href="login" class="text-mediumFont custom-underline flex  justify-center items-center loginBtn">Login</a>
+                            <a  href="login" class="text-mediumFont custom-underline flex  justify-center items-center loginBtn cursor-pointer">Login</a>
                         </nav>
                     </div>
                 </div>

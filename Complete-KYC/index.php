@@ -39,8 +39,7 @@ include $fold . 'includes/head.php';
                             <span class="text-black text-xl font-bold ">2</span>
                         </div>
                         <span
-                            class="text-black text-lg font-bold  absolute -bottom-12 min-w-48 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">Delivery
-                            Details</span>
+                            class="text-black text-lg font-bold  absolute -bottom-12 min-w-48 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">Choose Provider</span>
                     </div>
                     <div class="grow shrink basis-0 h-0.5  bg-[#20bc73]"></div>
                     <div class="flex flex-col relative">
@@ -68,7 +67,7 @@ include $fold . 'includes/head.php';
                             class="w-12 h-12 p-2.5 bg-white rounded-[30px] border-2 border-[#20bc73] flex-col justify-center items-center gap-2.5 inline-flex">
                             <span class="text-black text-xl font-bold ">5</span>
                         </div>
-                        <span
+                        <span id="completeKycText"
                             class="text-black text-lg   absolute -bottom-12 min-w-48 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">Complete
                             KYC</span>
                     </div>
@@ -96,12 +95,12 @@ include $fold . 'includes/head.php';
                                   </svg>
                                 <div class="self-stretch h-[91px] flex-col justify-start items-start gap-1 flex">
                                     <p class="self-stretch text-[#008e4b] text-2xl font-bold  leading-[28.80px]" id="customerGreeting"></p>
-                                    <p class="self-stretch text-[#008e4b] text-2xl font-bold  leading-[28.80px]">Your order has been confirmed.</p>
+                                    <p class="self-stretch text-[#008e4b] text-2xl font-bold  leading-[28.80px]">Your order has been placed.</p>
                                 </div>
                             </div>
         
                             <div class="mt-4">
-                                <span class="text-black text-base font-normal  leading-normal tracking-tight">Our Customer Executive will reach you within <b class="text-primary-blue">60 Minutes</b> for Pending Stock Confirmation.</span>
+                                <span class="text-black text-base font-normal  leading-normal tracking-tight" id="contactSoonText">Our Customer Executive will reach you within <b class="text-primary-blue">60 Minutes</b> for Pending Stock Confirmation.</span>
                             </div>
                             <div class="mt-4">
                                 <p class="text-black/40 text-base font-medium  leading-normal tracking-tight">Forex Order No</p>
@@ -180,10 +179,10 @@ include $fold . 'includes/head.php';
                                           </svg>
                               
                                       <span class="text-black text-sm font-medium leading-[21px] doc-name">Document Title</span>
-                                      <a href="" target="_blank" class="preview_link">View</a>
+                                      
                                     </div>
                               
-                                    <div class="uploadBtn self-stretch pl-3 pr-2 py-1 bg-[#0e51a0]/5 rounded justify-center items-center gap-2.5 flex relative">
+                                    <div class="uploadBtn self-stretch pl-3 pr-2 py-1 bg-[#0e51a0]/5 rounded justify-center items-center gap-2.5 flex relative cursor-pointer">
                                       <span class="text-[#0e51a0] text-xs font-semibold leading-[18px]">Upload</span>
                                       <input type="file" tag="" class="file_upload absolute border-none outline-none bg-transparent opacity-0 w-full h-full left-0 top-0">
                                     </div>
@@ -198,9 +197,13 @@ include $fold . 'includes/head.php';
                                     </div>
                                   </div>
                               
-                                  <div class="flex justify-between items-center px-2 mt-1 kycExtender">
+                                  <div class="flex gap-4 items-center px-2 mt-1 kycExtender">
                                     <span class="text-[#606060] text-xs font-normal leading-[21px]">Sample_Document.PDF</span>
-                                    <svg class="deleteIcon cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <a href="" target="_blank" class="preview_link border border-primary-blue rounded-lg  px-[3px] gap-1 flex items-center justify-center">
+                                        <svg fill="#0E51A0" height="17" width="17" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 488.85 488.85" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M244.425,98.725c-93.4,0-178.1,51.1-240.6,134.1c-5.1,6.8-5.1,16.3,0,23.1c62.5,83.1,147.2,134.2,240.6,134.2 s178.1-51.1,240.6-134.1c5.1-6.8,5.1-16.3,0-23.1C422.525,149.825,337.825,98.725,244.425,98.725z M251.125,347.025 c-62,3.9-113.2-47.2-109.3-109.3c3.2-51.2,44.7-92.7,95.9-95.9c62-3.9,113.2,47.2,109.3,109.3 C343.725,302.225,302.225,343.725,251.125,347.025z M248.025,299.625c-33.4,2.1-61-25.4-58.8-58.8c1.7-27.6,24.1-49.9,51.7-51.7 c33.4-2.1,61,25.4,58.8,58.8C297.925,275.625,275.525,297.925,248.025,299.625z"></path> </g> </g></svg>
+                                        <span class="text-[12px] text-primary-blue">View</span>
+                                    </a>
+                                    <svg class="deleteIcon cursor-pointer ml-auto" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
                                         <path d="M20.25 4.6875H16.3125V3.75C16.3125 3.20299 16.0952 2.67839 15.7084 2.29159C15.3216 1.9048 14.797 1.6875 14.25 1.6875H9.75C9.20299 1.6875 8.67839 1.9048 8.29159 2.29159C7.9048 2.67839 7.6875 3.20299 7.6875 3.75V4.6875H3.75C3.60082 4.6875 3.45774 4.74676 3.35225 4.85225C3.24676 4.95774 3.1875 5.10082 3.1875 5.25C3.1875 5.39918 3.24676 5.54226 3.35225 5.64775C3.45774 5.75324 3.60082 5.8125 3.75 5.8125H4.6875V19.5C4.6875 19.8481 4.82578 20.1819 5.07192 20.4281C5.31806 20.6742 5.6519 20.8125 6 20.8125H18C18.3481 20.8125 18.6819 20.6742 18.9281 20.4281C19.1742 20.1819 19.3125 19.8481 19.3125 19.5V5.8125H20.25C20.3992 5.8125 20.5423 5.75324 20.6477 5.64775C20.7532 5.54226 20.8125 5.39918 20.8125 5.25C20.8125 5.10082 20.7532 4.95774 20.6477 4.85225C20.5423 4.74676 20.3992 4.6875 20.25 4.6875ZM8.8125 3.75C8.8125 3.50136 8.91127 3.2629 9.08709 3.08709C9.2629 2.91127 9.50136 2.8125 9.75 2.8125H14.25C14.4986 2.8125 14.7371 2.91127 14.9129 3.08709C15.0887 3.2629 15.1875 3.50136 15.1875 3.75V4.6875H8.8125V3.75ZM18.1875 19.5C18.1875 19.5497 18.1677 19.5974 18.1326 19.6326C18.0974 19.6677 18.0497 19.6875 18 19.6875H6C5.95027 19.6875 5.90258 19.6677 5.86742 19.6326C5.83225 19.5974 5.8125 19.5497 5.8125 19.5V5.8125H18.1875V19.5ZM10.3125 9.75V15.75C10.3125 15.8992 10.2532 16.0423 10.1477 16.1477C10.0423 16.2532 9.89918 16.3125 9.75 16.3125C9.60082 16.3125 9.45774 16.2532 9.35225 16.1477C9.24676 16.0423 9.1875 15.8992 9.1875 15.75V9.75C9.1875 9.60082 9.24676 9.45774 9.35225 9.35225C9.45774 9.24676 9.60082 9.1875 9.75 9.1875C9.89918 9.1875 10.0423 9.24676 10.1477 9.35225C10.2532 9.45774 10.3125 9.60082 10.3125 9.75ZM14.8125 9.75V15.75C14.8125 15.8992 14.7532 16.0423 14.6477 16.1477C14.5423 16.2532 14.3992 16.3125 14.25 16.3125C14.1008 16.3125 13.9577 16.2532 13.8523 16.1477C13.7468 16.0423 13.6875 15.8992 13.6875 15.75V9.75C13.6875 9.60082 13.7468 9.45774 13.8523 9.35225C13.9577 9.24676 14.1008 9.1875 14.25 9.1875C14.3992 9.1875 14.5423 9.24676 14.6477 9.35225C14.7532 9.45774 14.8125 9.60082 14.8125 9.75Z" fill="black"/>
                                     </svg>
                                     
@@ -295,9 +298,29 @@ include $fold . 'includes/head.php';
 
     </div>
     <footer>
+
+
+    <div class="loadingAnimationContainer flex items-center justify-center h-screen fixed top-0 left-0 w-full bg-white z-50">
+            <div class="loading">
+                <svg viewBox="0 0 187.3 93.7" height="200px" width="300px" class="svgbox">
+                 <defs>
+                   <linearGradient y2="0%" x2="100%" y1="0%" x1="0%" id="gradient">
+                     <stop stop-color="#2C5AA2" offset="0%"></stop>
+                        <stop stop-color="#E3373A" offset="100%"></stop>
+                   </linearGradient>
+                 </defs>
+                 <path stroke="url(#gradient)" d="M93.9,46.4c9.3,9.5,13.8,17.9,23.5,17.9s17.5-7.8,17.5-17.5s-7.8-17.6-17.5-17.5c-9.7,0.1-13.3,7.2-22.1,17.1c-8.9,8.8-15.7,17.9-25.4,17.9s-17.5-7.8-17.5-17.5s7.8-17.5,17.5-17.5S86.2,38.6,93.9,46.4z"></path>
+               </svg>
+            </div>
+        </div>
+
+
+
+        <script src="<?php echo $fold . 'scripts/pageScripts/userCheck.js'; ?>"></script>
     <script src="<?php echo $fold . 'scripts/header.js'; ?>"></script>
 <script src="<?php echo $fold . 'scripts/pageScripts/completeKyc.js'; ?>"></script>
-<script src="<?php echo $fold . 'scripts/pageScripts/userCheck.js'; ?>"></script>
+
+<script src="<?php echo $fold . 'scripts/loadingAnimation.js'; ?>"></script>
 
     </footer>
 </body>

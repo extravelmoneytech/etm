@@ -105,7 +105,7 @@ countryData.sort((a, b) => {
 
 // Iterate through the country data and generate the dropdown
 countryData.forEach(country => {
-    console.log(country)
+  
   const dialCode = `+${country.dialCode}`;
   const countryName = country.name;  // Country name
   const countryISO = country.iso2.toUpperCase();  // ISO2 code

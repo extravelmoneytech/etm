@@ -1,156 +1,169 @@
-const cityData = {
-    "Ernakulam": ["Cochin", "Kochi", "Tripunithura"],
-    "Kozhikode": ["Calicut"],
-    "Thiruvananthapuram": ["Trivandrum"],
-    "Coimbatore": ["Vadakovai", "RS Puram", "Kovai"],
-    "Bangalore": ["Bengaluru", "Banglore", "BANGALORE", "Yeswanthpur"],
-    "Adyar": ["Adayar"],
-    "Puducherry": ["Puducherry"],
-    "Kannur": ["Thellisserry"],
-    "Odisha": ["Orissa"],
-    "Kollam": ["Shakthikulangara"],
-    "Palakkad": ["Palghat", "Mannarkad"],
-    "Alappuzha": ["Alleppey", "Alappuzha"],
-    "Pathanamthitta": ["Tiruvalla", "Changanacherry"],
-    "Hyderabad": ["Liberty", "Trimulgherry"],
-    "Barakhamba Road": ["Connaught place"],
-    "Gurgaon": ["Gurugram", "Gurgaon", "Gurgaon, Gurugram"],
-    "Mysore": ["Mysuru"],
-    "Dibrugarh": ["Dibrugarh"],
-    "Dehradun": ["Dehradun"],
-    "Vadodara": ["Baroda", "RaceCourse", "Baroda,RaceCourse", "Vadodara,Baroda"],
-    "Goa": ["Panjim"],
-    "Visakhapatnam": ["Vizag", "Vishakhapatnam"],
-    "Mangalore": ["Mangaluru"],
-    "Trichy": ["Tiruchirappalli", "Thiruchirappalli"],
-    "New Delhi": ["Barkhamba Road"],
-    "Kolkata": ["Park Street"],
-    "Ahmedabad": ["Navarngapura"],
-    "Puttur": ["Puthur"],
-    "Coorg": ["Kodagu"],
-    "Udupi": ["Bannanje", "Murumarga"],
-    "Thane": ["Naupada"],
-    "Chittorgarh": ["Chittaurgarh"],
-    "Malappuram": ["Edappal", "Perinthalmanna"],
-  "Thrissur": ["Irinjalakuda", "Kodungallur", "Kunnamkulam"],
-  "Kasaragod": ["Kanhangad"],
-  "Chennai": ["Egmore"]
-}
-
-
-
 document.addEventListener('DOMContentLoaded', function () {
-    const MIN_LENGTH = 2; // Minimum length to trigger filtering
-    const cityInput = document.getElementById('citySelector');
-    const resultsContainer = document.getElementById('results');
-    const searchSpinner = document.getElementById('searchspin');
-  
-    // Define a list of popular cities
-    const popularCities = ["Bangalore", "Hyderabad","Ernakulam", "Mumbai", "Delhi", "Chennai", "Pune", "Kolkata", "Ahmedabad"];
-  
-    // Convert JSON data to a flat list for easier search
-    const cityList = Object.keys(cityData);
-  
-    // Hide the results container initially
-    resultsContainer.style.display = 'none';
-  
-    // Function to display popular cities
-    function displayPopularCities() {
-      resultsContainer.innerHTML = ''; // Clear previous results
-  
-      popularCities.forEach(city => {
-        const cityElement = createCityElement(city);
-        resultsContainer.appendChild(cityElement);
-      });
-  
-      resultsContainer.style.display = 'flex'; // Show results container with popular cities
-    }
-  
-    // Function to create a city element
-    function createCityElement(city) {
+  let forexCityData = {};
+  let moneyTransferCityData = {};
+  const cityInput = document.getElementById('citySelector');
+  const resultsContainer = document.getElementById('results');
+  const searchSpinner = document.getElementById('searchspin');
+  const MIN_LENGTH = 3; // Minimum length to trigger filtering
+
+  // Define a list of popular cities (can be customized for each type if needed)
+  // Updated list of popular cities from buy_forex.json (Forex)
+  const popularForexCities = [
+    "Mumbai", "Delhi", "Bangalore", "Hyderabad", 
+    "Chennai", "Kolkata", "Ahmedabad", "Pune", 
+    "Ernakulam", "Coimbatore"
+];
+
+// Updated list of popular cities from money_transfer.json (Money Transfer)
+const popularMoneyTransferCities = [
+    "Mumbai", "Delhi", "Bangalore", "Hyderabad", 
+    "Chennai", "Kolkata", "Pune", "Ahmedabad", 
+    "Jaipur", "Surat"
+];
+
+  // Function to load both JSON files simultaneously
+  async function loadCityData() {
+      try {
+          const [forexResponse, moneyTransferResponse] = await Promise.all([
+              fetch('../locationData/buy_forex.json'), // Replace with actual URL of forex JSON
+              fetch('../locationData/money_transfer.json') // Replace with actual URL of money transfer JSON
+          ]);
+
+          forexCityData = await forexResponse.json();
+          moneyTransferCityData = await moneyTransferResponse.json();
+
+          // Initially display forex city list or wait for user to choose
+          displayPopularCities(forexCityData.cityData, popularForexCities); // Show forex list by default
+      } catch (error) {
+          console.error('Error loading city data:', error);
+      }
+  }
+
+  // Call the function to load both JSON files when DOM is loaded
+  loadCityData();
+
+  // Function to create a city element
+  function createCityElement(city) {
       const cityElement = document.createElement('div');
       cityElement.setAttribute('value', city);
       cityElement.className = 'cityBtn h-7 px-3 py-2 bg-[#e7eef5] rounded-xl justify-center items-center gap-1 inline-flex cursor-pointer';
-  
+
       const cityText = document.createElement('p');
       cityText.className = 'text-xs font-medium leading-3';
       cityText.textContent = city;
-  
+
       cityElement.appendChild(cityText); // Append the text to the city element
-  
+
       // Add click event to each city element
       cityElement.addEventListener('click', function () {
-        cityInput.value = city; // Update input value with the selected city
-        highlightSelectedCity(cityElement); // Highlight the selected city
+          cityInput.value = city; // Update input value with the selected city
+          highlightSelectedCity(cityElement); // Highlight the selected city
       });
-  
+
       return cityElement;
-    }
-  
-    // Function to highlight the selected city element
-    function highlightSelectedCity(selectedElement) {
+  }
+
+  // Function to highlight the selected city element
+  function highlightSelectedCity(selectedElement) {
       // Remove 'selectedCity' class from any previously selected city element
       const previousSelected = document.querySelector('.selectedCity');
       if (previousSelected) {
-        previousSelected.classList.remove('selectedCity');
+          previousSelected.classList.remove('selectedCity');
       }
-  
+
       // Add 'selectedCity' class to the newly selected city element
       selectedElement.classList.add('selectedCity');
-    }
-  
-    // Function to filter and display city results
-    function filterCities(keyword) {
+  }
+
+  // Function to display popular cities (based on the current type: forex or money transfer)
+  function displayPopularCities(cityData, popularCities) {
       resultsContainer.innerHTML = ''; // Clear previous results
-  
+
+      popularCities.forEach(city => {
+          const cityElement = createCityElement(city);
+          resultsContainer.appendChild(cityElement);
+      });
+
+      resultsContainer.style.display = 'flex'; // Show results container with popular cities
+  }
+
+  // Function to filter and display city results
+  function filterCities(keyword, cityData) {
+      resultsContainer.innerHTML = ''; // Clear previous results
+
       if (keyword.length >= MIN_LENGTH) {
-        searchSpinner.style.display = 'block'; // Show loading spinner
-  
-        const filteredCities = cityList.filter(city => {
-          const alternatives = cityData[city];
-          // Check if the city name or any of its alternatives include the keyword
-          return city.toLowerCase().includes(keyword.toLowerCase()) ||
-            alternatives.some(alt => alt.toLowerCase().includes(keyword.toLowerCase()));
-        });
-  
-        // Display filtered cities or 'No cities found'
-        if (filteredCities.length > 0) {
-          filteredCities.forEach(city => {
-            const cityElement = createCityElement(city);
-            resultsContainer.appendChild(cityElement); // Append city element to the results container
+          searchSpinner.style.display = 'block'; // Show loading spinner
+
+          const cityList = Object.keys(cityData);
+
+          const filteredCities = cityList.filter(city => {
+              const alternatives = cityData[city] || []; // Ensure alternatives is an array
+              // Check if the city name or any of its alternatives include the keyword
+              return city.toLowerCase().includes(keyword.toLowerCase()) ||
+                  (Array.isArray(alternatives) && alternatives.some(alt => alt.toLowerCase().includes(keyword.toLowerCase())));
           });
-  
-          resultsContainer.style.display = 'flex'; // Show results container if there are results
-        } else {
-          const noResultsItem = document.createElement('div');
-          noResultsItem.className = 'h-7 px-3 py-2 text-red-500 rounded-xl justify-center items-center gap-1 inline-flex';
-          noResultsItem.textContent = 'No cities found';
-          resultsContainer.appendChild(noResultsItem);
-  
-          resultsContainer.style.display = 'flex'; // Show results container even if no results are found
-        }
-  
-        searchSpinner.style.display = 'none'; // Hide loading spinner
+
+          // Display filtered cities or 'No cities found'
+          if (filteredCities.length > 0) {
+              filteredCities.forEach(city => {
+                  const cityElement = createCityElement(city);
+                  resultsContainer.appendChild(cityElement); // Append city element to the results container
+              });
+
+              resultsContainer.style.display = 'flex'; // Show results container if there are results
+          } else {
+              const noResultsItem = document.createElement('div');
+              noResultsItem.className = 'h-7 px-3 py-2 text-red-500 rounded-xl justify-center items-center gap-1 inline-flex';
+              noResultsItem.textContent = 'No cities found';
+              resultsContainer.appendChild(noResultsItem);
+
+              resultsContainer.style.display = 'flex'; // Show results container even if no results are found
+          }
+
+          searchSpinner.style.display = 'none'; // Hide loading spinner
       } else {
-        displayPopularCities(); // Show popular cities if input length is less than MIN_LENGTH
+          // Display popular cities if input length is less than MIN_LENGTH
+          if (currentCityType === 'forex') {
+              displayPopularCities(forexCityData.cityData, popularForexCities);
+          } else {
+              displayPopularCities(moneyTransferCityData.cityData, popularMoneyTransferCities);
+          }
       }
-    }
-  
-    // Initial display of popular cities
-    displayPopularCities();
-  
-    // Event listener for keyup event on city input
-    cityInput.addEventListener('keyup', function () {
+  }
+
+  // Initial display of popular forex cities
+  let currentCityType = 'forex'; // Default to forex initially
+
+  // Event listener for keyup event on city input
+  cityInput.addEventListener('keyup', function () {
       const keyword = cityInput.value.trim(); // Get input value and remove extra spaces
-      filterCities(keyword); // Call function to filter and display results
-    });
-  
-    // Event listener for input field focus event to show popular cities when input is cleared
-    cityInput.addEventListener('input', function () {
-      if (cityInput.value.trim() === '') {
-        displayPopularCities(); // Show popular cities when input is cleared
+
+      if (currentCityType === 'forex') {
+          filterCities(keyword, forexCityData.cityData);
+      } else {
+          filterCities(keyword, moneyTransferCityData.cityData);
       }
-    });
   });
-  
-  
+
+  // Event listeners for switching between forex and money transfer cities
+  document.getElementById('getRatesButton').addEventListener('click', function () {
+      currentCityType = 'forex';
+      displayPopularCities(forexCityData.cityData, popularForexCities); // Show forex city list
+  });
+
+  document.getElementById('getRatesButtonMt').addEventListener('click', function () {
+      currentCityType = 'moneyTransfer';
+      displayPopularCities(moneyTransferCityData.cityData, popularMoneyTransferCities); // Show money transfer city list
+  });
+
+  // Event listener for input field focus event to show popular cities when input is cleared
+  cityInput.addEventListener('input', function () {
+      if (cityInput.value.trim() === '') {
+          if (currentCityType === 'forex') {
+              displayPopularCities(forexCityData.cityData, popularForexCities); // Show forex popular cities
+          } else {
+              displayPopularCities(moneyTransferCityData.cityData, popularMoneyTransferCities); // Show money transfer popular cities
+          }
+      }
+  });
+});

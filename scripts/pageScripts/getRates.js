@@ -1,3 +1,12 @@
+let nextPageUrl='/Delivery-Details'
+let nextPageUrlMt='/Contact-Details'
+// Then on the previous page, use this to detect when the page is revisited
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        // Force reload if the page is cached
+        window.location.reload();
+    }
+});
 
 
 // Set an initial state on page load
@@ -7,7 +16,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 const token = sessionStorage.getItem('token');
 
-
+console.log(token,'tokken')
 
 if (sessionStorage.getItem('productPage') === 'fx') {
 
@@ -33,13 +42,17 @@ if (sessionStorage.getItem('productPage') === 'fx') {
     };
 
     const currencySymbols = {
-        'USD': '$',
-        'GBP': '£',
-        'EUR': '€',
-        'AUD': 'A$',
-        'CAD': 'C$',
-        'THB': '฿'
-        // Add other currency mappings here as needed
+        'USD': '$',      // United States Dollar
+        'GBP': '£',      // British Pound
+        'EUR': '€',      // Euro
+        'AUD': 'A$',     // Australian Dollar
+        'CAD': 'C$',     // Canadian Dollar
+        'THB': '฿',      // Thai Baht
+        'SGD': 'S$',     // Singapore Dollar
+        'JPY': '¥',      // Japanese Yen
+        'MYR': 'RM',     // Malaysian Ringgit
+        'NZD': 'NZ$',    // New Zealand Dollar
+        'AED': 'AED'     // UAE Dirham (using "AED" as the symbol)
     };
     let rowId;
 
@@ -100,7 +113,7 @@ if (sessionStorage.getItem('productPage') === 'fx') {
                 console.log(data, 'mbcx')
                 if (data.products) {
                     addCard(data.products)
-                    productData = data.products
+                    
                 }
 
 
@@ -125,7 +138,42 @@ if (sessionStorage.getItem('productPage') === 'fx') {
         if (userCheck()) {
 
 
-            location.href = '/Delivery-Details'
+            const params = new URLSearchParams({
+                action: 'add_user_to_order',
+                token: token,
+                uid:sessionStorage.getItem('userId')
+            });
+
+
+            
+            
+    
+            fetch('https://mvc.extravelmoney.com/api-etm/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: params.toString(),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data, 'mbcx')
+                    
+    
+    
+                    if(data.status){
+                        location.href = nextPageUrl
+                    }
+    
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // location.href='error.html'
+                });
+
+
+
+     
 
         } else {
             console.log('not a user, verification required')
@@ -236,6 +284,7 @@ if (sessionStorage.getItem('productPage') === 'fx') {
 
     function addCard(data) {
 
+        productData = data
         console.log(data, 'adding cards');
         renderCartItems(data);
 
@@ -258,7 +307,7 @@ if (sessionStorage.getItem('productPage') === 'fx') {
 
             // Set the card note with market rate and city info
             newCard.querySelector('#cardNote').innerHTML = `The current market rate of <span class="currencyCode">${item.currency}</span> per 1 unit is <b>${item.rate}</b> Indian rupees in <b>${buyCity}</b>`;
-
+            newCard.querySelector('#cardCurrencyName').textContent=item.currency
             // Format the currency value
             const formattedWidgetCurrency = currencyNames[item.currency]
                 ? `${currencyNames[item.currency]} (${item.currency})`
@@ -275,7 +324,7 @@ if (sessionStorage.getItem('productPage') === 'fx') {
             input.addEventListener('input', () => {
                 const currentAmount = input.value.replace(/^\D+/, ''); // Remove currency symbol
                 let finalAmount = currentAmount * item.rate;
-                inrRate.textContent = '₹' + formatIndianCurrency(finalAmount);
+                inrRate.textContent = '₹' + formatIndianCurrency(finalAmount.toFixed(0));
 
                 console.log(productData, 'pdData')
 
@@ -478,7 +527,7 @@ if (sessionStorage.getItem('productPage') === 'mt') {
             // Populate the card with the API data
             clone.querySelector('.bank-logo').src = `public/images/logo/${item.logo}.svg`; // Assuming logo images are stored by vendor name
             clone.querySelector('.bank-name').textContent = item.vendor_name;
-            clone.querySelector('.branch-visit').textContent = item.pg === "0" ? 'Branch Visit Required' : '';
+            
             clone.querySelector('.payment-method1').textContent = 'Online Payment';
             clone.querySelector('.payment-method2').textContent = 'NEFT/RTGS';
             clone.querySelector('.supported-services').textContent = 'Supports Flyware, Convera, PayMyTuition';
@@ -516,7 +565,7 @@ if (sessionStorage.getItem('productPage') === 'mt') {
                     });
 
                 if (userCheck()) {
-                    location.href = '/Contact-Details'
+                    location.href = nextPageUrlMt
                 }
                 else {
 
@@ -532,6 +581,12 @@ if (sessionStorage.getItem('productPage') === 'mt') {
         });
     }
 }
+
+if (!token){
+    console.log('hihih')
+    window.location.href='/error.html'
+}
+
 
 
 
@@ -590,7 +645,7 @@ let otpInputs = document.querySelectorAll('.otpInputBlock input');
 function sendOtp() {
 
     let mobNumber = document.querySelector('#mobNumber');
-    let otpInputContainer = document.querySelector('#otpInputContainer');
+    let otpInputContainer = document.querySelector('#otpMobileContainer');
     let countryCode = document.querySelector('.countryCodeContainer').getAttribute('dataval')
 
 
@@ -612,7 +667,8 @@ function sendOtp() {
                 action: 'send_otp',
                 token: token,  // Assuming `token` is defined elsewhere in your code
                 country_code: countryCode,
-                mobile: mobNumber.value
+                mobile: mobNumber.value,
+                mode:otpMode
             });
 
             const response = await fetch(apiUrl, {
@@ -642,8 +698,19 @@ function sendOtp() {
     })();
 }
 
-// Add event listener for button click
-document.querySelector('#optSend').addEventListener('click', sendOtp);
+let otpMode;
+
+// Add event listener for otp sms click
+document.querySelector('#optSend').addEventListener('click',()=>{
+    otpMode='sms'
+    sendOtp()
+} );
+
+// Add event listener for otp whatsapp click
+document.querySelector('#whatsappOtpSend').addEventListener('click',()=>{
+    otpMode='wa'
+    sendOtp()
+} );
 
 // Add event listener for Enter key press
 document.querySelector('#mobNumber').addEventListener('keydown', function (event) {
@@ -727,11 +794,11 @@ function verifyOtp() {
 
                 closeOtpWidget()
                 if (sessionStorage.getItem('productPage') === 'fx') {
-                    location.href = '/Delivery-Details'
+                    location.href = nextPageUrl
                 }
                 else if (sessionStorage.getItem('productPage') === 'mt') {
 
-                    location.href = '/Contact-Details'
+                    location.href = nextPageUrlMt
                 }
             }
             

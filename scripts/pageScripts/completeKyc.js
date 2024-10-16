@@ -1,10 +1,21 @@
+// Then on the previous page, use this to detect when the page is revisited
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        // Force reload if the page is cached
+        window.location.reload();
+    }
+});
+if(!userCheck()){
+    window.location.href='/'
+}
+
 let customerGreeting = document.querySelector('#customerGreeting');
 
 let copyBtn = document.querySelector('#copyBtn')
 
 
 let orderId = sessionStorage.getItem('orderId');
-
+let uid = sessionStorage.getItem('userId');
 
 document.getElementById('orderId').textContent = sessionStorage.getItem('orderId')
 customerGreeting.textContent = `Hello ${sessionStorage.getItem('customerName')},`
@@ -37,6 +48,9 @@ copyBtn.addEventListener('click', () => {
 
 
 const kycData = async () => {
+
+    loadinggg(true)
+    
     let txn = sessionStorage.getItem('productPage')
     if (txn === 'fx') {
         txn = 'buy'
@@ -66,7 +80,27 @@ const kycData = async () => {
         const resp = await response.json();
         console.log(resp)
         console.log(resp.kyc_list)
+
+
+        let contactSoon;
+
+        if (resp.holiday) {
+            contactSoon = `On account of ${resp.holiday_reason} Holiday, we will update you regarding the order before <b class="text-primary-blue">${resp.update_on}</b>.`;
+        } else if (resp.market_closed && !resp.holiday) {
+            contactSoon = `Since the forex market is closed now, Our Customer Executive will reach you before <b class="text-primary-blue">${resp.update_on}</b>.`;
+        } else if (!resp.market_closed && !resp.holiday) {
+            contactSoon = `Our Customer Executive will reach you within <b class="text-primary-blue">60 Minutes</b> for Pending Stock Confirmation.`;
+        }
+
+        document.querySelector('#contactSoonText').innerHTML=contactSoon
+
+        
+
+
+
         createKycUploaders(resp.kyc_list)
+
+        loadinggg(false)
     } catch (error) {
         console.error('Error fetching data:', error);
         location.href = '/error.html'
@@ -117,7 +151,7 @@ function createKycUploaders(documentObject) {
 
             // Set the preview link
             previewLink.setAttribute('href', doc.preview);
-            previewLink.style.display = 'block'; // Show the preview link
+            previewLink.style.display = 'flex'; // Show the preview link
 
             // Set the file name and style to appear uploaded
             fileNameSpan.textContent = "File uploaded";
@@ -133,12 +167,19 @@ function createKycUploaders(documentObject) {
             // Add delete functionality
             deleteButton.addEventListener('click', () => {
                 // API call to delete the uploaded file
-                const tag = doc.tag; // Use tag for API identification
-
+                fileNameSpan.textContent = 'Deleting...';
+                console.log(doc, 'docc');
                 // Call the delete API
-                deleteFileFromApi(tag)
+                let data = {
+                    tag: doc.tag,
+                    personal: doc.personal,
+                    order_no: orderId,
+                    uid: uid
+                };
+                deleteFileFromApi(data)
                     .then((response) => {
-                        if (response.success) {
+                        console.log(response)
+                        if (response.result) {
                             // Clear the uploader state (resetting to initial empty state)
                             fileNameSpan.textContent = '';
                             progressBar.style.display = 'none';
@@ -147,6 +188,8 @@ function createKycUploaders(documentObject) {
                             uploader.querySelector('input[type="file"]').style.display = 'block'; // Show file input for new upload
                             kycExtender.style.display = 'none'; // Hide the extender when no file is uploaded
                             uploader.classList.remove('kycUploaderActive'); // Remove active state
+                            uploader.querySelector('input[type="file"]').value = ''; // Clear the file input content
+                            checkIfAllKycUploaded(); // Check again after deleting a file
                         } else {
                             alert('Failed to delete the file. Please try again.');
                         }
@@ -168,18 +211,52 @@ function createKycUploaders(documentObject) {
 
     // After rendering the uploaders, initialize the file upload listeners
     initFileUploadListeners();
+
+    // Call checkIfAllKycUploaded() after all KYC uploaders are created
+    checkIfAllKycUploaded();
 }
 
-// Mock API function for deleting a file (Replace this with your actual API call)
-function deleteFileFromApi(tag) {
-    // Simulate an API call with a promise that resolves to a success response
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Simulating success
-            resolve({ success: true });
-        }, 1000); // Simulated API delay
+
+async function deleteFileFromApi(data) {
+    const apiUrl = 'https://mvc.extravelmoney.com/api-etm/';
+    // Construct the parameters for the API call
+    const params = new URLSearchParams({
+        action: 'kyc_delete',
+        uid: data.uid,
+        order_no: data.order_no,
+        personal: data.personal,
+        upload_tag: data.tag
     });
+
+    try {
+        // Make the API call using fetch
+
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: params.toString(),
+        });
+
+        if (!response.ok) {
+            // Detailed error message
+            throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+        }
+
+        const resp = await response.json();
+        return resp
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        // Optionally, redirect to an error page
+        // location.href = 'error.html';
+    }
+
 }
+
+
+
 
 // Function to initialize file upload listeners after the DOM is updated
 function initFileUploadListeners() {
@@ -247,6 +324,8 @@ function initFileUploadListeners() {
                     isApiResponseReceived = true;
                     if (response.result) {
                         // Once the API responds, fast-complete the progress bar
+                        let isUploadComplete = false; // Flag to track if the upload is completed
+
                         let completionSpeed = setInterval(() => {
                             if (progress < 100) {
                                 progress += 10;
@@ -257,29 +336,42 @@ function initFileUploadListeners() {
                                     // Finalize the upload process
                                     uploader.classList.remove('kycUploaderDelay');
                                     progressBar.style.display = 'none';
-                                    kycExtender.querySelector('svg').style.display = 'block';
+                                    kycExtender.querySelector('.deleteIcon').style.display = 'block';
                                     uploader.classList.add('kycUploaderActive');
                                     progressContainer.style.display = 'none';
 
-                                    
-
                                     // Set the preview link
                                     previewLink.setAttribute('href', response.file);
-                                    previewLink.style.display = 'block'; // Show the preview link
-                                    // Show delete button after successful upload
-                                    deleteButton.style.display = 'inline-block';
+                                    previewLink.style.display = 'flex'; // Show the preview link
+                                    deleteButton.style.display = 'inline-block'; // Show delete button after successful upload
+
+                                    // Ensure checkIfAllKycUploaded() is called only once
+                                    if (!isUploadComplete) {
+                                        checkIfAllKycUploaded(); // Call only once when the upload is complete
+                                        isUploadComplete = true; // Mark the upload as complete
+                                    }
 
                                     // Add delete functionality for the new file
                                     deleteButton.addEventListener('click', () => {
-                                        deleteFileFromApi(tag)
+                                        fileNameSpan.textContent = 'Deleting...';
+                                        let deleteData = {
+                                            tag: tag,
+                                            personal: personal,
+                                            order_no: orderId,
+                                            uid: uid
+                                        };
+                                        deleteFileFromApi(deleteData)
                                             .then((response) => {
-                                                if (response.success) {
+                                                if (response.result) {
                                                     fileNameSpan.textContent = '';
                                                     previewLink.style.display = 'none';
                                                     deleteButton.style.display = 'none';
                                                     progressBar.style.display = 'none';
                                                     uploader.querySelector('input[type="file"]').style.display = 'block';
                                                     uploader.classList.remove('kycUploaderActive');
+                                                    uploader.querySelector('input[type="file"]').value = ''; // Clear the file input content
+
+                                                    checkIfAllKycUploaded(); // Check again after deletion
                                                 }
                                             });
                                     });
@@ -289,6 +381,7 @@ function initFileUploadListeners() {
                                 progressText.textContent = `${Math.floor(progress)}%`;
                             }
                         }, 50); // Speed up to complete fast after response
+
                     }
                 });
 
@@ -317,7 +410,7 @@ function initFileUploadListeners() {
 
 
 
-let uid = sessionStorage.getItem('userId');
+
 let token = sessionStorage.getItem('token');
 let action = 'kyc_upload'
 async function uploadFileToApi(data) {
@@ -337,4 +430,28 @@ async function uploadFileToApi(data) {
     });
 
     return await response.json(); // Return response in JSON format
+}
+
+
+// Function to check if all KYCs are uploaded
+function checkIfAllKycUploaded() {
+    const kycUploaders = document.querySelectorAll('.kycUploader');
+    let allUploaded = true;
+
+    kycUploaders.forEach(uploader => {
+        console.log(uploader.classList)
+        const isActive = uploader.classList.contains('kycUploaderActive');
+
+        if (!isActive) {
+            allUploaded = false;
+        }
+    });
+
+    if (allUploaded) {
+        document.querySelector('#completeKycText').style.fontWeight = 'bold';
+
+    } else {
+        document.querySelector('#completeKycText').style.fontWeight = 'normal';
+        console.log(false); // Not all KYCs are uploaded
+    }
 }

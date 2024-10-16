@@ -1,3 +1,12 @@
+let nextPageUrl = '/Get-Rates'
+// Then on the previous page, use this to detect when the page is revisited
+window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+        // Force reload if the page is cached
+        window.location.reload();
+    }
+});
+
 
 // Set an initial state on page load
 window.addEventListener('DOMContentLoaded', () => {
@@ -53,7 +62,7 @@ chooseCityOverlay.addEventListener('click', (event) => {
 // money transfer dropdown updation
 
 const countryListContainer = document.getElementById('mtCountryList');
-
+const defaultCountry = countryListContainer.getAttribute('defaultCountry')
 // Clear any existing list items in the container
 countryListContainer.innerHTML = '';
 
@@ -85,6 +94,11 @@ function createCountryListItem(country) {
 countryData.forEach(country => {
     const countryListItem = createCountryListItem(country);
     countryListContainer.appendChild(countryListItem);
+    if (country.flagCode === defaultCountry) {
+        console.log('countryFound', country)
+        forceSelectDropdownItem('mtCountryDropDown', country.country.toLowerCase())
+    }
+
 });
 
 
@@ -107,14 +121,14 @@ let userInfo;
 userInfo = localStorage.getItem('userInfo');
 
 if (userInfo) {
- // Parse the JSON string into an object
- userInfo = JSON.parse(userInfo);
+    // Parse the JSON string into an object
+    userInfo = JSON.parse(userInfo);
 
-// Now it's an object, and you can use it properly
+    // Now it's an object, and you can use it properly
     console.log(userInfo, 'ytfygug');
 } else {
-     console.log('No userInfo found in localStorage');
- }
+    console.log('No userInfo found in localStorage');
+}
 
 
 
@@ -138,13 +152,13 @@ async function fetchAndStoreWidgetData() {
 
         widgetData = await response.json();
         // Store data in sessionStorage
-sessionStorage.setItem('ibrData', JSON.stringify(widgetData.ibr));
+        sessionStorage.setItem('ibrData', JSON.stringify(widgetData.ibr));
 
 
 
-            
 
-        
+
+
         maximumCurrencyValue = (3000 * widgetData.ibr.USD.currency).toFixed(0)
         maximumForexCardValue = (250000 * widgetData.ibr.USD.forexCard).toFixed(0)
         maximumMtValue = (250000 * widgetData.ibr.USD.MT.AD2).toFixed(0)
@@ -157,7 +171,7 @@ sessionStorage.setItem('ibrData', JSON.stringify(widgetData.ibr));
 
 
 
-        
+
 
 
     } catch (error) {
@@ -203,13 +217,68 @@ function updateApproxValue(data) {
         return;
     }
 
-    approxValueFx = approxAmnt.toFixed(2)
+    approxValueFx = approxAmnt.toFixed(0)
+
+
+    let productType = document.querySelector('#WidgetProduct').getAttribute('dataval') === 'forexCard' ? 'Forex Card' : 'Currency'
+
+    let container = document.querySelector('#widgetFxInputContainer')
+
+
+
+
+    // Check if the product type is 'Currency' and the value exceeds the maximum currency note limit
+    if (productType === 'Currency' && Number(approxValueFx) > Number(maximumCurrencyValue)) {
+        console.log(approxValueFx, maximumCurrencyValue);
+        removeAlertBelowElement(container);
+        insertAlertBelowElement(container, 'A Resident Indian can carry up to USD 3000 (or equivalent) in currency notes per trip. For more, consider using a Forex Card or ensure another traveler accompanies you.');
+    } else {
+        // Only remove the currency warning if no such alert is needed
+        removeAlertBelowElement(container);
+    }
+
+    // Check if the value exceeds the maximum Forex Card limit (this applies regardless of product type)
+    if (Number(approxValueFx) > Number(maximumForexCardValue)) {
+        removeAlertBelowElement(container);
+        insertAlertBelowElement(container, 'High-roller alert! Your total Forex value is greater than $250,000, which is the maximum amount a single person is allowed to carry/remit by the RBI.');
+        activeGetRatesBtn(false,'fx'); // Disable the button if the Forex limit is exceeded
+    } else {
+        activeGetRatesBtn(true,'fx'); // Enable the button if within the Forex limit
+    }
+
+
+
+
+
 
 
 
     // Format and update the approximate value
-    approxVal.textContent = formatIndianCurrency(approxAmnt.toFixed(2)) + ' INR';
+    approxVal.textContent = formatIndianCurrency(approxAmnt.toFixed(0)) + ' INR';
 }
+
+
+function activeGetRatesBtn(val,type) {
+    let btn;
+    if(type==='fx'){
+        btn = document.querySelector('#getRatesButton');
+    }
+    if(type==='mt'){
+        btn = document.querySelector('#getRatesButtonMt');
+    }
+    
+    
+    if (val) {
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto'; // Re-enable click events
+        
+    } else {
+        btn.style.opacity = '0.2';
+        btn.style.pointerEvents = 'none'; // Disable click events
+        
+    }
+}
+
 
 
 
@@ -265,6 +334,11 @@ document.querySelector('#widgetCurrency').addEventListener('dropdownChange', () 
 });
 let cleanedNumericPart = 1000;
 document.querySelector('#widgetAmount').addEventListener('input', () => {
+
+
+
+
+
     const amountField = document.querySelector('#widgetAmount');
     let amountText = amountField.value.trim();
 
@@ -278,6 +352,11 @@ document.querySelector('#widgetAmount').addEventListener('input', () => {
     // Update the input field with the cleaned value, adding back the currency symbol
     const currencySymbol = amountText.slice(0, spaceIndex + 1); // Preserve the currency symbol
     amountField.value = `${currencySymbol}${cleanedNumericPart}`;
+
+
+
+
+
 
     // Proceed with updating the approximate value
     updateCurrencySymbol('widgetCurrency', 'fx')
@@ -312,11 +391,11 @@ function getToken(paramsData) {
     })
         .then(response => response.json())
         .then(data => {
-            sessionStorage.setItem('userValid',data.user_valid);
+            sessionStorage.setItem('userValid', data.user_valid);
             console.log('Success:', data);
 
             sessionStorage.setItem('token', data.token);
-            document.querySelector('#citySelect').style.opacity='1';
+            document.querySelector('#citySelect').style.opacity = '1';
             document.querySelector('#citySelect').removeAttribute('disabled');
         })
         .catch((error) => {
@@ -354,20 +433,6 @@ document.querySelector('#getRatesButton').addEventListener('click', () => {
         removeAlertBelowElement(container)
     }
 
-    if (product === 'Forex Card' && Number(approxValueFx) > Number(maximumForexCardValue)) {
-        insertAlertBelowElement(container, 'Your total Forex value is greater than $2,50,000 enter a smaller amount');
-        return
-    } else {
-        removeAlertBelowElement(container)
-    }
-
-    if (product === 'Currency' && Number(approxValueFx) > Number(maximumCurrencyValue)) {
-        console.log(approxValueFx, maximumCurrencyValue)
-        insertAlertBelowElement(container, 'Your total Currency value is greater than $3000 enter a smaller amount');
-        return
-    } else {
-        removeAlertBelowElement(container)
-    }
 
 
 
@@ -377,46 +442,53 @@ document.querySelector('#getRatesButton').addEventListener('click', () => {
 
 
 
-    
+
+
+
+
+
+
+
+
 
     let paramsData
-    if(userInfo){
+    if (userInfo) {
 
 
 
-        // Data for FX product
-    paramsData = {
-        action: 'initial_data',
-        transaction: 'buy',
-        product: product,
-        currency: currency,
-        amount: amount,
-        mobile: userInfo.mobNum,
-        country_code: userInfo.countryCode,
-        userip: '',
-        device: '',
-        country: '',
-        purpose: '',
-        uid:userInfo.userId
-    };
-    }
-    else{
         // Data for FX product
         paramsData = {
-        action: 'initial_data',
-        transaction: 'buy',
-        product: product,
-        currency: currency,
-        amount: amount,
-        mobile: '0',
-        country_code: '0',
-        userip: '',
-        device: '',
-        country: '',
-        purpose: ''
-    };
+            action: 'initial_data',
+            transaction: 'buy',
+            product: product,
+            currency: currency,
+            amount: amount,
+            mobile: userInfo.mobNum,
+            country_code: userInfo.countryCode,
+            userip: '',
+            device: '',
+            country: '',
+            purpose: '',
+            uid: userInfo.userId
+        };
     }
-console.log(paramsData)
+    else {
+        // Data for FX product
+        paramsData = {
+            action: 'initial_data',
+            transaction: 'buy',
+            product: product,
+            currency: currency,
+            amount: amount,
+            mobile: '0',
+            country_code: '0',
+            userip: '',
+            device: '',
+            country: '',
+            purpose: ''
+        };
+    }
+    console.log(paramsData)
 
 
     // Call common function to get token
@@ -468,19 +540,12 @@ document.querySelector('#getRatesButtonMt').addEventListener('click', () => {
         removeAlertBelowElement(container)
     }
 
+    
 
-    if (Number(approxValueMt) > Number(maximumMtValue)) {
-        console.log(Number(approxValueMt), Number(maximumMtValue))
-        insertAlertBelowElement(container, 'Your total Forex value is greater than $2,50,000 enter a smaller amount');
-        return
-    } else {
-        removeAlertBelowElement(container)
-    }
-
-// Data for MT product
+    // Data for MT product
 
     let paramsData;
-    if(userInfo){
+    if (userInfo) {
         paramsData = {
             action: 'initial_data',
             transaction: 'mt',
@@ -495,8 +560,8 @@ document.querySelector('#getRatesButtonMt').addEventListener('click', () => {
             currency: mtCurrency
         };
     }
-    else{
-       paramsData = {
+    else {
+        paramsData = {
             action: 'initial_data',
             transaction: 'mt',
             product: 'Telegraphic Transfer(TT)',
@@ -510,8 +575,8 @@ document.querySelector('#getRatesButtonMt').addEventListener('click', () => {
             currency: mtCurrency
         };
     }
-    
-    
+
+
 
     console.log(paramsData);
 
@@ -567,7 +632,7 @@ document.querySelector('#citySelect').addEventListener('click', () => {
 
         // Store the object in sessionStorage as a JSON string
         sessionStorage.setItem('storedData', JSON.stringify(dataObject));
-        window.location.href = '/Get-Rates';
+        window.location.href = nextPageUrl;
 
 
     } else if (productType === 'mt') {
@@ -575,7 +640,7 @@ document.querySelector('#citySelect').addEventListener('click', () => {
         // Store the object in sessionStorage as a JSON string
         sessionStorage.setItem('mtCity', cityInput.value);
 
-        window.location.href = '/Get-Rates';
+        window.location.href = nextPageUrl;
 
     }
 
@@ -832,10 +897,26 @@ function updateApproxValueMt(data) {
 
 
         // Limit the calculated value to 2 decimal places
-        const limitedAmount = approxAmnt.toFixed(2);
+        const limitedAmount = approxAmnt.toFixed(0);
 
         // Display the formatted approximate value
         approxValueMt = limitedAmount
+
+
+
+        let container = document.querySelector('#widgetMtInputContainer')
+        if (Number(approxValueMt) > Number(maximumMtValue)) {
+        console.log(Number(approxValueMt), Number(maximumMtValue))
+        insertAlertBelowElement(container, 'High-roller alert! Your total Forex value is greater than $250,000, which is the maximum amount a single person is allowed to carry/remit by the RBI.');
+        activeGetRatesBtn(false,'mt')
+        return
+        } else {
+        activeGetRatesBtn(true,'mt')
+        removeAlertBelowElement(container)
+        }
+
+
+        
         approxVal.textContent = formatIndianCurrency(limitedAmount) + ' INR';
     }
 }

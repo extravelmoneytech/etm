@@ -1,3 +1,17 @@
+let nextPageUrl='/Complete-KYC'
+
+// Then on the previous page, use this to detect when the page is revisited
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        // Force reload if the page is cached
+        window.location.reload();
+    }
+});
+
+if(!userCheck()){
+    window.location.href='/'
+}
+
 let token = sessionStorage.getItem('token')
 console.log(token)
 document.addEventListener('DOMContentLoaded', async () => {
@@ -25,17 +39,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const resp = await response.json();
 
         if (resp) {
-            console.log(resp);
 
+            console.log(resp,'fvcc');
+            if(!resp.bank_charges){
+                window.location.href='/error.html'
+            }
 
             if(sessionStorage.getItem('productPage')==='fx'){
                 if (resp.delivery_opted === '0') {
                     document.querySelector('#doorDeliveryData').style.display = "none"
-                    
+                    document.querySelector('#paymentInfoText').innerHTML=`Visit store before <b>${resp.delivery_on}</b> . Full/partial payment required before store visit. Payment instructions will be shared on your registered email after KYC verification.`
                 }else{
                     document.querySelector('#deliveryFee').innerHTML = '₹' + resp.door_fee;
+                    document.querySelector('#paymentInfoText').textContent='Full payment required before delivery. Payment instructions will be shared on your registered email after KYC verification.'
                 }
-                document.querySelector('#totalAmnt').innerHTML = '₹' + resp.total;
+                document.querySelector('#totalAmnt').innerHTML = '₹' +formatIndianCurrency(resp.total) ;
     
                 document.querySelector('#gst').innerHTML = '₹' + resp.gst;
                 // Handle the response
@@ -76,8 +94,9 @@ function formatAmount(amount) {
 }
 
 // Function to generate the HTML for each product
+
 function generateProductHTML(product) {
-    const { currency, amount, rate } = product;
+    const { currency, amount, product: productName, rate } = product; // Destructure productName correctly
 
     // Create the product container
     const productDiv = document.createElement('div');
@@ -86,7 +105,7 @@ function generateProductHTML(product) {
     // Create the rate paragraph
     const rateParagraph = document.createElement('p');
     rateParagraph.classList.add('text-[#677489]', 'text-sm', 'font-medium', 'tracking-tight');
-    rateParagraph.textContent = `${currency} (Note) @ ${rate}`;
+    rateParagraph.textContent = `${currency} (${productName ? (productName === 'Forex Card' ? 'Card' : 'Note') : 'note'}) @ ${rate}`;
 
     // Create the amount paragraph
     const amountParagraph = document.createElement('p');
@@ -99,6 +118,7 @@ function generateProductHTML(product) {
 
     return productDiv;
 }
+
 
 
 
@@ -152,7 +172,7 @@ const placeOrder= async ()=>{
             console.log(resp)
             
             sessionStorage.setItem('orderId',resp.orderID)
-            location.href='/Complete-KYC'
+            location.href=nextPageUrl
             setTimeout(() => {
                 loadinggg(false)
             }, 2000);

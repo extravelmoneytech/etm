@@ -37,8 +37,7 @@
                             <span class="text-black text-xl font-bold ">2</span>
                         </div>
                         <span
-                            class="text-black text-lg font-bold  absolute -bottom-12 min-w-48 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">Delivery
-                            Details</span>
+                            class="text-black text-lg font-bold  absolute -bottom-12 min-w-48 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">Choose Provider</span>
                     </div>
                     <div class="grow shrink basis-0 h-0.5  bg-[#20bc73]"></div>
                     <div class="flex flex-col relative">
@@ -130,11 +129,15 @@
 
                                 <div class="px-2 flex flex-col mt-4">
 
-                                    <span class="text-black/60 text-sm font-semibold pl-2">Enter Phone Number</span>
+                                    <span class="text-black/60 text-sm font-semibold pl-2">Phone Number</span>
 
-                                    <input
-                                        class="w-full border border-black/10 rounded-lg h-12 indent-3 mt-1 font-bold outline-none"
-                                        type="text" id="customerMobile" disabled>
+                                    
+                                        <div class="w-full border border-black/10 rounded-lg h-12 indent-3 mt-1 font-bold outline-none flex items-center justify-between cursor-not-allowed" id="customerMobile" >
+                                        <span></span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0,0,300,250">
+                                            <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.33333,5.33333)"><circle cx="24" cy="24" r="20" fill="#0e51a0"></circle><path d="M22.491,30.69c-0.576,0 -1.152,-0.22 -1.591,-0.659l-6.083,-6.084c-0.879,-0.878 -0.879,-2.303 0,-3.182c0.878,-0.879 2.304,-0.879 3.182,0l6.083,6.084c0.879,0.878 0.879,2.303 0,3.182c-0.439,0.439 -1.015,0.659 -1.591,0.659z" fill="#ffffff"></path><path d="M22.491,30.69c-0.576,0 -1.152,-0.22 -1.591,-0.659c-0.879,-0.878 -0.879,-2.303 0,-3.182l9.539,-9.539c0.878,-0.879 2.304,-0.879 3.182,0c0.879,0.878 0.879,2.303 0,3.182l-9.539,9.539c-0.439,0.439 -1.015,0.659 -1.591,0.659z" fill="#ffffff"></path></g></g>
+                                        </svg>
+                                        </div>
 
                                 </div>
 
@@ -270,7 +273,7 @@
     
                                         </div>
                                         <ul class="dropdownList">
-                                            <li value="holiday">
+                                            <li value="holidayLeisure">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none">
                                                     <path
@@ -373,7 +376,7 @@
                </svg>
             </div>
         </div>
-
+        <script src="<?php echo $fold . 'scripts/pageScripts/userCheck.js'; ?>"></script>
         <script src="<?php echo $fold . 'scripts/header.js'; ?>"></script>
 <script src="<?php echo $fold . 'scripts/loadingAnimation.js'; ?>"></script>
 <script src="<?php echo $fold . 'scripts/changePageScript.js'; ?>"></script>
@@ -381,7 +384,7 @@
 <script src="<?php echo $fold . 'scripts/dropDown.js'; ?>"></script>
 <script src="<?php echo $fold . 'scripts/datePicker.js'; ?>"></script>
 <script src="<?php echo $fold . 'scripts/pageScripts/contactDetails.js'; ?>"></script>
-<script src="<?php echo $fold . 'scripts/pageScripts/userCheck.js'; ?>"></script>
+
 
     </footer>
 </body>
